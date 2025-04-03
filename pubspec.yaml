@@ -2,7 +2,7 @@ name: ffwpu_flutter_view
 description: "A new Flutter project."
 
 # Prevent accidental publishing to pub.dev.
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -23,10 +24,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # Enable generation of localized Strings from arb files.
-  generate: true
-
   assets:
-    # Add assets from the images directory to the application.
     - assets/images/
