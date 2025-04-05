@@ -52,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
                     Container(
-                      width: double.infinity,
+                        width: double.infinity,
+                        constraints: const BoxConstraints(maxWidth: 400),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                       decoration: BoxDecoration(
                         color: Colors.white,
