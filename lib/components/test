@@ -1,0 +1,40 @@
+class CustomTable extends StatelessWidget {
+  final List<Map<String, dynamic>> data;
+  final Map<String, List<String>> columns;
+  final Function(Map<String, dynamic>? row) onRowTap;
+  final Function(String) onSort;
+  final String sortColumn;
+  final bool isAscending;
+
+  const CustomTable({
+    Key? key,
+    required this.data,
+    required this.columns,
+    required this.onRowTap,
+    required this.onSort,
+    required this.sortColumn,
+    required this.isAscending,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleHeaders = columns['lg'] ?? [];
+
+    return DataTable(
+      columns: visibleHeaders.map((header) {
+        return DataColumn(
+          label: Text(header),
+          onSort: (columnIndex, _) => onSort(header), // Trigger sorting
+        );
+      }).toList(),
+      rows: data.map((row) {
+        return DataRow(
+          cells: visibleHeaders.map((header) {
+            return DataCell(Text('${row[header] ?? "-"}'));
+          }).toList(),
+          onSelectChanged: (selected) => onRowTap(row),
+        );
+      }).toList(),
+    );
+  }
+}
