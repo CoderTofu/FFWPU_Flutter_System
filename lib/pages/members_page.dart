@@ -54,11 +54,10 @@ final List<Map<String, dynamic>> _originalData = [
   String? _selectedNation;
   String? _selectedRegion;
   String? _selectedAgeGroup;
-  String? _selectedArchived;
   String? _selectedMembershipCategory;
 
   final columns = {
-    "lg": ["Name", "Age", "Email"],
+    "lg": ["Name", "Age", "Gender", "Email"],
     "md": ["Name", "Email"],
     "sm": ["Name"],
   };
@@ -111,16 +110,42 @@ final List<Map<String, dynamic>> _originalData = [
   }
 
   void _applyFilters() {
-    _filteredData = _originalData.where((item) {
-      final matchSearch = item.values.any(
-        (value) => value.toString().toLowerCase().contains(_searchQuery),
-      );
+    setState(() {
+      _filteredData = _originalData.where((item) {
+        // Search filter
+        final matchSearch = _searchQuery.isEmpty || item.values.any(
+          (value) => value.toString().toLowerCase().contains(_searchQuery),
+        );
 
-      return matchSearch;
-      // Add actual filter logic here for the dropdowns when data is available
-    }).toList();
+        // Gender filter
+        final matchGender = _selectedGender == null || 
+            item['Gender']?.toString().toLowerCase() == _selectedGender?.toLowerCase();
 
-    _sortData();
+        // Age group filter
+        final matchAgeGroup = _selectedAgeGroup == null || _matchesAgeGroup(item['Age'], _selectedAgeGroup);
+
+        return matchSearch && matchGender && matchAgeGroup;
+      }).toList();
+
+      _sortData();
+    });
+  }
+
+  bool _matchesAgeGroup(int? age, String? ageGroup) {
+    if (age == null || ageGroup == null) return true;
+    
+    switch (ageGroup) {
+      case '<18':
+        return age < 18;
+      case '18-30':
+        return age >= 18 && age <= 30;
+      case '31-50':
+        return age >= 31 && age <= 50;
+      case '51+':
+        return age > 50;
+      default:
+        return true;
+    }
   }
 
   void _clearFilters() {
@@ -129,8 +154,8 @@ final List<Map<String, dynamic>> _originalData = [
       _selectedNation = null;
       _selectedRegion = null;
       _selectedAgeGroup = null;
-      _selectedArchived = null;
       _selectedMembershipCategory = null;
+      _searchQuery = '';
       _sortColumn = 'Name';
       _sortAscending = true;
       _applyFilters();
@@ -405,12 +430,6 @@ final List<Map<String, dynamic>> _originalData = [
                             (val) => setModalState(() => _selectedAgeGroup = val),
                           ),
                           _buildFilterDropdown(
-                            "Archived",
-                            ["Yes", "No"],
-                            _selectedArchived,
-                            (val) => setModalState(() => _selectedArchived = val),
-                          ),
-                          _buildFilterDropdown(
                             "Membership",
                             ["Basic", "Premium", "VIP"],
                             _selectedMembershipCategory,
@@ -488,7 +507,7 @@ final List<Map<String, dynamic>> _originalData = [
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -506,7 +525,7 @@ final List<Map<String, dynamic>> _originalData = [
                 width: double.infinity,
                 child: Center(
                   child: Text(
-                    "MEMBER MANAGEMENT",
+                    "MEMBERS",
                     style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -514,7 +533,7 @@ final List<Map<String, dynamic>> _originalData = [
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
             child: Row(
               children: [
                 Expanded(
@@ -525,7 +544,8 @@ final List<Map<String, dynamic>> _originalData = [
                       labelText: 'Search',
                       hintText: 'Enter search term...',
                       prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      constraints: const BoxConstraints(maxHeight: 48),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -533,17 +553,20 @@ final List<Map<String, dynamic>> _originalData = [
                     onChanged: _handleSearch,
                   ),
                 ),
-                const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: _showFilterModal,
-                  icon: const Icon(Icons.filter_list),
-                  label: const Text("Filters"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF01438F),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                const SizedBox(width: 16),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    onPressed: _showFilterModal,
+                    icon: const Icon(Icons.filter_list),
+                    label: const Text("Filters"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF01438F),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ),
@@ -552,7 +575,7 @@ final List<Map<String, dynamic>> _originalData = [
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
