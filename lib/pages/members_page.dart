@@ -124,82 +124,96 @@ class _MembersPageState extends State<MembersPage> {
         header: 'Member ID',
         width: 100,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Title',
         header: 'Title',
         width: 80,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Full_Name',
         header: 'Full Name',
         width: 200,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Gender',
         header: 'Gender',
         width: 100,
         textAlign: TextAlign.center,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Date_Of_Birth',
         header: 'Date Of\nBirth',
         width: 120,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Age',
         header: 'Age',
         width: 80,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Marital_Status',
         header: 'Marital\nStatus',
         width: 100,
         textAlign: TextAlign.center,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Address',
         header: 'Address',
         width: 200,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Country',
         header: 'Country',
         width: 150,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Region',
         header: 'Region',
         width: 150,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
       TableColumn(
         key: 'Membership_Category',
         header: 'Membership\nCategory',
         width: 120,
         textAlign: TextAlign.center,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Generation',
         header: 'Generation',
         width: 120,
         textAlign: TextAlign.center,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Blessing_Status',
         header: 'Blessing\nStatus',
         width: 120,
         textAlign: TextAlign.center,
+        isSortable: false,
       ),
       TableColumn(
         key: 'Spiritual_Birthday',
         header: 'Spiritual\nBirthday',
         width: 120,
         textAlign: TextAlign.center,
+        isSortable: true,
       ),
     ],
     responsiveColumns: {
@@ -623,7 +637,7 @@ class _MembersPageState extends State<MembersPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply'),
+                            child: const Text('Apply',style: TextStyle(color: Colors.white),),
                           ),
                         ),
                       ],
@@ -646,32 +660,6 @@ class _MembersPageState extends State<MembersPage> {
       endDrawer: EndDrawer(),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const SizedBox(
-                height: 80,
-                width: double.infinity,
-            child: Center(
-                  child: Text(
-                    "MEMBERS LIST",
-                    style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
             child: Row(
