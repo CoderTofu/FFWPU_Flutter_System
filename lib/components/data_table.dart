@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ffwpu_flutter_view/components/table_config.dart';
 
 class CustomTable extends StatefulWidget {
   final List<Map<String, dynamic>> data;
-  final Map<String, List<String>> columns;
+  final TableConfig config;
   final Function(Map<String, dynamic>? row)? onRowTap;
 
   const CustomTable({
     super.key,
     required this.data,
-    required this.columns,
+    required this.config,
     this.onRowTap,
   });
 
@@ -23,20 +24,9 @@ class _CustomTableState extends State<CustomTable> {
   final ScrollController _bodyHorizontalController = ScrollController();
   final ScrollController _verticalController = ScrollController();
 
-  // Define fixed column widths
-  final Map<String, double> columnWidths = {
-    'ID': 80,
-    'Name': 200,
-    'Age': 100,
-    'Email': 250,
-  };
-
-  List<String> get visibleHeaders => widget.columns[_tableSize] ?? [];
-
   @override
   void initState() {
     super.initState();
-    // Sync horizontal scroll controllers
     _headerHorizontalController.addListener(_syncHeaderScroll);
     _bodyHorizontalController.addListener(_syncBodyScroll);
   }
@@ -77,88 +67,99 @@ class _CustomTableState extends State<CustomTable> {
     widget.onRowTap?.call(row);
   }
 
-  double _calculateTableWidth(BoxConstraints constraints) {
-    double totalWidth = 0;
-    for (String header in visibleHeaders) {
-      totalWidth += columnWidths[header] ?? 150;
-    }
-    return totalWidth > constraints.maxWidth ? totalWidth : constraints.maxWidth;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         _updateTableSize(constraints);
-        final tableWidth = _calculateTableWidth(constraints);
+        final visibleColumns = widget.config.getVisibleTableColumns(_tableSize);
+        final tableWidth = widget.config.getTotalWidth(_tableSize);
         
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: widget.config.borderRadius,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  width: constraints.maxWidth,
-                  color: const Color(0xFF01438F),
-                  child: SingleChildScrollView(
-                    controller: _headerHorizontalController,
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: tableWidth,
-                      child: DataTable(
-                        showCheckboxColumn: false,
-                        headingRowHeight: 48,
-                        dataRowMaxHeight: 0,
-                        horizontalMargin: 0,
-                        columnSpacing: 0,
-                        columns: visibleHeaders.map((header) => 
-                          DataColumn(
-                            label: Container(
-                              width: columnWidths[header] ?? 150,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                header,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+            borderRadius: widget.config.borderRadius ?? BorderRadius.zero,
+            child: Scrollbar(
+              controller: _bodyHorizontalController,
+              thumbVisibility: widget.config.showHorizontalScrollbar,
+              scrollbarOrientation: ScrollbarOrientation.bottom,
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    width: constraints.maxWidth,
+                    color: widget.config.headerColor,
+                    child: SingleChildScrollView(
+                      controller: _headerHorizontalController,
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: tableWidth,
+                        child: DataTable(
+                          showCheckboxColumn: widget.config.showCheckboxColumn,
+                          headingRowHeight: widget.config.headerHeight,
+                          dataRowMaxHeight: 0,
+                          horizontalMargin: 0,
+                          columnSpacing: 0,
+                          columns: visibleColumns.map((column) => 
+                            DataColumn(
+                              label: Container(
+                                width: column.width,
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  column.header,
+                                  style: const TextStyle(
+                                    color: Color(0xFFFFD700), // Golden yellow color
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  maxLines: 2,
+                                  textHeightBehavior: const TextHeightBehavior(
+                                    applyHeightToFirstAscent: false,
+                                    applyHeightToLastDescent: false,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ).toList(),
-                        rows: const [],
+                          ).toList(),
+                          rows: const [],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // Table body
-                Expanded(
-                  child: Scrollbar(
-                    controller: _verticalController,
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
+                  // Table body
+                  Expanded(
+                    child: Scrollbar(
                       controller: _verticalController,
-                      child: Scrollbar(
-                        controller: _bodyHorizontalController,
-                        thumbVisibility: true,
-                        scrollbarOrientation: ScrollbarOrientation.bottom,
+                      thumbVisibility: widget.config.showVerticalScrollbar,
+                      child: SingleChildScrollView(
+                        controller: _verticalController,
                         child: SingleChildScrollView(
                           controller: _bodyHorizontalController,
                           scrollDirection: Axis.horizontal,
-                          child: SizedBox(
+                          child: Container(
                             width: tableWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.grey[300]!,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
                             child: DataTable(
-                              showCheckboxColumn: false,
+                              showCheckboxColumn: widget.config.showCheckboxColumn,
                               headingRowHeight: 0,
-                              dataRowMinHeight: 48,
-                              dataRowMaxHeight: 48,
+                              dataRowMinHeight: widget.config.rowHeight,
+                              dataRowMaxHeight: widget.config.rowHeight,
                               horizontalMargin: 0,
                               columnSpacing: 0,
-                              columns: visibleHeaders.map((header) => 
+                              columns: visibleColumns.map((column) => 
                                 DataColumn(
                                   label: Container(),
                                 ),
@@ -179,22 +180,32 @@ class _CustomTableState extends State<CustomTable> {
                                   },
                                   color: MaterialStateProperty.resolveWith<Color?>(
                                     (Set<MaterialState> states) {
-                                      if (isSelected) return const Color(0xFFE7E6E6);
+                                      if (isSelected) return widget.config.selectedRowColor;
                                       if (states.contains(MaterialState.hovered)) {
-                                        return const Color(0xFFE7E6E6);
+                                        return widget.config.hoverRowColor;
                                       }
-                                      return Colors.white;
+                                      return widget.config.rowColor;
                                     },
                                   ),
-                                  cells: visibleHeaders.map((header) {
+                                  cells: visibleColumns.map((column) {
+                                    final value = row[column.key];
                                     return DataCell(
                                       Container(
-                                        width: columnWidths[header] ?? 150,
+                                        width: column.width,
                                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                                        child: Text(
-                                          '${row[header] ?? "-"}',
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                        alignment: column.textAlign != null 
+                                            ? Alignment.center 
+                                            : Alignment.centerLeft,
+                                        child: column.customCellBuilder != null
+                                            ? column.customCellBuilder!(value)
+                                            : Text(
+                                                '${value ?? "-"}',
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: column.textAlign,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                ),
+                                              ),
                                       ),
                                     );
                                   }).toList(),
@@ -206,8 +217,8 @@ class _CustomTableState extends State<CustomTable> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

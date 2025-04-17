@@ -2,65 +2,248 @@ import 'package:ffwpu_flutter_view/components/data_table.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
+import 'package:ffwpu_flutter_view/components/table_config.dart';
 
 class MembersPage extends StatefulWidget {
-  const MembersPage({super.key});
+ const MembersPage({super.key});
 
   @override
   State<MembersPage> createState() => _MembersPageState();
 }
 
 class _MembersPageState extends State<MembersPage> {
-final List<Map<String, dynamic>> _originalData = [
-  {"Name": "Charlsie", "Age": 28, "Email": "charlie@example.com", "ID": "1", "Gender": "Female"},
-  {"Name": "Alice", "Age": 25, "Email": "alice@example.com", "ID": "2", "Gender": "Female"},
-  {"Name": "Bob", "Age": 30, "Email": "bob@example.com", "ID": "3", "Gender": "Male"},
-  {"Name": "David", "Age": 22, "Email": "david@example.com", "ID": "4", "Gender": "Male"},
-  {"Name": "Eva", "Age": 27, "Email": "eva@example.com", "ID": "5", "Gender": "Female"},
-  {"Name": "Frank", "Age": 35, "Email": "frank@example.com", "ID": "6", "Gender": "Male"},
-  {"Name": "Grace", "Age": 29, "Email": "grace@example.com", "ID": "7", "Gender": "Female"},
-  {"Name": "Hannah", "Age": 24, "Email": "hannah@example.com", "ID": "8", "Gender": "Female"},
-  {"Name": "Ian", "Age": 31, "Email": "ian@example.com", "ID": "9", "Gender": "Male"},
-  {"Name": "Jake", "Age": 26, "Email": "jake@example.com", "ID": "10", "Gender": "Male"},
-  {"Name": "Karen", "Age": 32, "Email": "karen@example.com", "ID": "11", "Gender": "Female"},
-  {"Name": "Leo", "Age": 23, "Email": "leo@example.com", "ID": "12", "Gender": "Male"},
-  {"Name": "Mia", "Age": 27, "Email": "mia@example.com", "ID": "13", "Gender": "Female"},
-  {"Name": "Nathan", "Age": 36, "Email": "nathan@example.com", "ID": "14", "Gender": "Male"},
-  {"Name": "Olivia", "Age": 30, "Email": "olivia@example.com", "ID": "15", "Gender": "Female"},
-  {"Name": "Paul", "Age": 33, "Email": "paul@example.com", "ID": "16", "Gender": "Male"},
-  {"Name": "Queenie", "Age": 21, "Email": "queenie@example.com", "ID": "17", "Gender": "Female"},
-  {"Name": "Ryan", "Age": 34, "Email": "ryan@example.com", "ID": "18", "Gender": "Male"},
-  {"Name": "Sophia", "Age": 28, "Email": "sophia@example.com", "ID": "19", "Gender": "Female"},
-  {"Name": "Tom", "Age": 29, "Email": "tom@example.com", "ID": "20", "Gender": "Male"},
-  {"Name": "Uma", "Age": 26, "Email": "uma@example.com", "ID": "21", "Gender": "Female"},
-  {"Name": "Victor", "Age": 31, "Email": "victor@example.com", "ID": "22", "Gender": "Male"},
-  {"Name": "Wendy", "Age": 25, "Email": "wendy@example.com", "ID": "23", "Gender": "Female"},
-  {"Name": "Xander", "Age": 27, "Email": "xander@example.com", "ID": "24", "Gender": "Male"},
-  {"Name": "Yasmin", "Age": 33, "Email": "yasmin@example.com", "ID": "25", "Gender": "Female"},
-  {"Name": "Zane", "Age": 34, "Email": "zane@example.com", "ID": "26", "Gender": "Male"},
-  {"Name": "Bella", "Age": 22, "Email": "bella@example.com", "ID": "27", "Gender": "Female"},
-  {"Name": "Caleb", "Age": 35, "Email": "caleb@example.com", "ID": "28", "Gender": "Male"},
-  {"Name": "Diana", "Age": 29, "Email": "diana@example.com", "ID": "29", "Gender": "Female"},
-  {"Name": "Ethan", "Age": 24, "Email": "ethan@example.com", "ID": "30", "Gender": "Male"},
-];
-
+  final List<Map<String, dynamic>> _originalData = [
+    {
+      "Member_ID": "1",
+      "Title": "Mr.",
+      "Full_Name": "Test Test Test",
+      "Gender": "Male",
+      "Date_Of_Birth": "2016-10-11",
+      "Age": 8,
+      "Marital_Status": "Single",
+      "Address": "123 Address Street",
+      "Country": "Philippines",
+      "Region": "Asia Pacific",
+      "Membership_Category": "Regular",
+      "Generation": "1st Generation",
+      "Blessing_Status": "IDK",
+      "Spiritual_Birthday": "2025-02-06"
+    },
+    {
+      "Member_ID": "5",
+      "Title": "Mr.",
+      "Full_Name": "Rafael Sebastian de la Cruz Torres",
+      "Gender": "Male",
+      "Date_Of_Birth": "2003-09-08",
+      "Age": 21,
+      "Marital_Status": "Single",
+      "Address": "123 Address Street",
+      "Country": "Philippines",
+      "Region": "Asia Pacific",
+      "Membership_Category": "Regular",
+      "Generation": "1st Generation",
+      "Blessing_Status": "idk",
+      "Spiritual_Birthday": "2022-05-11"
+    },
+    {
+      "Member_ID": "8",
+      "Title": "Mrs.",
+      "Full_Name": "Maria Santos",
+      "Gender": "Female",
+      "Date_Of_Birth": "1990-03-15",
+      "Age": 34,
+      "Marital_Status": "Married",
+      "Address": "456 Main Avenue",
+      "Country": "Korea",
+      "Region": "East Asia",
+      "Membership_Category": "Premium",
+      "Generation": "2nd Generation",
+      "Blessing_Status": "Blessed",
+      "Spiritual_Birthday": "2010-08-22"
+    },
+    {
+      "Member_ID": "12",
+      "Title": "Ms.",
+      "Full_Name": "Sarah Johnson",
+      "Gender": "Female",
+      "Date_Of_Birth": "1995-07-20",
+      "Age": 28,
+      "Marital_Status": "Single",
+      "Address": "789 Oak Road",
+      "Country": "United States",
+      "Region": "North America",
+      "Membership_Category": "VIP",
+      "Generation": "1st Generation",
+      "Blessing_Status": "Matching",
+      "Spiritual_Birthday": "2015-12-01"
+    },
+    {
+      "Member_ID": "15",
+      "Title": "Mr.",
+      "Full_Name": "John Smith",
+      "Gender": "Male",
+      "Date_Of_Birth": "1988-11-30",
+      "Age": 35,
+      "Marital_Status": "Married",
+      "Address": "321 Pine Street",
+      "Country": "United Kingdom",
+      "Region": "Europe",
+      "Membership_Category": "Premium",
+      "Generation": "2nd Generation",
+      "Blessing_Status": "Blessed",
+      "Spiritual_Birthday": "2008-09-15"
+    },
+    {
+      "Member_ID": "18",
+      "Title": "Dr.",
+      "Full_Name": "Emily Chen",
+      "Gender": "Female",
+      "Date_Of_Birth": "1992-04-25",
+      "Age": 31,
+      "Marital_Status": "Single",
+      "Address": "567 Cherry Lane",
+      "Country": "Singapore",
+      "Region": "Asia Pacific",
+      "Membership_Category": "VIP",
+      "Generation": "1st Generation",
+      "Blessing_Status": "Matching",
+      "Spiritual_Birthday": "2012-06-30"
+    },
+  ];
 
   late List<Map<String, dynamic>> _filteredData;
   String _searchQuery = '';
-  String _sortColumn = 'Name';
+  String _sortColumn = 'Full_Name';
   bool _sortAscending = true;
+  Map<String, String?> _activeFilters = {};
 
-  String? _selectedGender;
-  String? _selectedNation;
-  String? _selectedRegion;
-  String? _selectedAgeGroup;
-  String? _selectedMembershipCategory;
-
-  final columns = {
-    "lg": ["Name", "Age", "Gender", "Email"],
-    "md": ["Name", "Email"],
-    "sm": ["Name"],
-  };
+  final TableConfig _tableConfig = TableConfig(
+    columns: [
+      TableColumn(
+        key: 'Member_ID',
+        header: 'Member ID',
+        width: 100,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Title',
+        header: 'Title',
+        width: 80,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Full_Name',
+        header: 'Full Name',
+        width: 200,
+      ),
+      TableColumn(
+        key: 'Gender',
+        header: 'Gender',
+        width: 100,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Date_Of_Birth',
+        header: 'Date Of\nBirth',
+        width: 120,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Age',
+        header: 'Age',
+        width: 80,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Marital_Status',
+        header: 'Marital\nStatus',
+        width: 100,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Address',
+        header: 'Address',
+        width: 200,
+      ),
+      TableColumn(
+        key: 'Country',
+        header: 'Country',
+        width: 150,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Region',
+        header: 'Region',
+        width: 150,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Membership_Category',
+        header: 'Membership\nCategory',
+        width: 120,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Generation',
+        header: 'Generation',
+        width: 120,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Blessing_Status',
+        header: 'Blessing\nStatus',
+        width: 120,
+        textAlign: TextAlign.center,
+      ),
+      TableColumn(
+        key: 'Spiritual_Birthday',
+        header: 'Spiritual\nBirthday',
+        width: 120,
+        textAlign: TextAlign.center,
+      ),
+    ],
+    responsiveColumns: {
+      'lg': [
+        'Member_ID', 'Title', 'Full_Name', 'Gender', 'Date_Of_Birth', 
+        'Age', 'Marital_Status', 'Address', 'Country', 'Region', 
+        'Membership_Category', 'Generation', 'Blessing_Status', 'Spiritual_Birthday'
+      ],
+      'md': ['Member_ID', 'Full_Name', 'Gender', 'Age', 'Country', 'Region'],
+      'sm': ['Member_ID', 'Full_Name', 'Gender'],
+    },
+    filterOptions: [
+      FilterOption(
+        label: 'Gender',
+        field: 'Gender',
+        options: ['Male', 'Female'],
+      ),
+      FilterOption(
+        label: 'Region',
+        field: 'Region',
+        options: ['Asia Pacific', 'East Asia', 'North America', 'Europe'],
+      ),
+      FilterOption(
+        label: 'Marital Status',
+        field: 'Marital_Status',
+        options: ['Single', 'Married'],
+      ),
+      FilterOption(
+        label: 'Generation',
+        field: 'Generation',
+        options: ['1st Generation', '2nd Generation'],
+      ),
+      FilterOption(
+        label: 'Blessing Status',
+        field: 'Blessing_Status',
+        options: ['Blessed', 'Matching'],
+      ),
+      FilterOption(
+        label: 'Membership',
+        field: 'Membership_Category',
+        options: ['Regular', 'Premium', 'VIP'],
+      ),
+    ],
+  );
 
   @override
   void initState() {
@@ -117,58 +300,36 @@ final List<Map<String, dynamic>> _originalData = [
           (value) => value.toString().toLowerCase().contains(_searchQuery),
         );
 
-        // Gender filter
-        final matchGender = _selectedGender == null || 
-            item['Gender']?.toString().toLowerCase() == _selectedGender?.toLowerCase();
+        // Apply all active filters
+        final matchFilters = _activeFilters.entries.every((filter) {
+          if (filter.value == null) return true;
+          return item[filter.key]?.toString() == filter.value;
+        });
 
-        // Age group filter
-        final matchAgeGroup = _selectedAgeGroup == null || _matchesAgeGroup(item['Age'], _selectedAgeGroup);
-
-        return matchSearch && matchGender && matchAgeGroup;
+        return matchSearch && matchFilters;
       }).toList();
 
       _sortData();
     });
   }
 
-  bool _matchesAgeGroup(int? age, String? ageGroup) {
-    if (age == null || ageGroup == null) return true;
-    
-    switch (ageGroup) {
-      case '<18':
-        return age < 18;
-      case '18-30':
-        return age >= 18 && age <= 30;
-      case '31-50':
-        return age >= 31 && age <= 50;
-      case '51+':
-        return age > 50;
-      default:
-        return true;
-    }
-  }
-
   void _clearFilters() {
     setState(() {
-      _selectedGender = null;
-      _selectedNation = null;
-      _selectedRegion = null;
-      _selectedAgeGroup = null;
-      _selectedMembershipCategory = null;
+      _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Name';
+      _sortColumn = 'Full_Name';
       _sortAscending = true;
       _applyFilters();
     });
   }
 
-  Widget _buildFilterDropdown(String label, List<String> options, String? selectedValue, Function(String?) onChanged) {
+  Widget _buildFilterDropdown(FilterOption filter) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
-        value: selectedValue,
+        value: _activeFilters[filter.field],
         decoration: InputDecoration(
-          labelText: label,
+          labelText: filter.label,
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
@@ -177,7 +338,11 @@ final List<Map<String, dynamic>> _originalData = [
         ),
         onChanged: (value) {
           setState(() {
-            onChanged(value);
+            if (value == null) {
+              _activeFilters.remove(filter.field);
+            } else {
+              _activeFilters[filter.field] = value;
+            }
             _applyFilters();
           });
         },
@@ -186,7 +351,7 @@ final List<Map<String, dynamic>> _originalData = [
             value: null,
             child: Text('All'),
           ),
-          ...options.map((option) => DropdownMenuItem<String>(
+          ...filter.options.map((option) => DropdownMenuItem<String>(
                 value: option,
                 child: Text(option),
               )),
@@ -217,7 +382,7 @@ final List<Map<String, dynamic>> _originalData = [
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF01438F),
+                      color: const Color(0xFF003876),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -292,10 +457,12 @@ final List<Map<String, dynamic>> _originalData = [
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                         ),
-                                        items: ['Name', 'Age', 'Email'].map((field) {
+                                        items: _tableConfig.columns
+                                            .where((col) => col.isSortable)
+                                            .map((col) {
                                           return DropdownMenuItem(
-                                            value: field,
-                                            child: Text(field),
+                                            value: col.key,
+                                            child: Text(col.header.replaceAll('\n', ' ')),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
@@ -329,8 +496,8 @@ final List<Map<String, dynamic>> _originalData = [
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color(0xFF01438F) : Colors.white,
-                                                  border: Border.all(color: const Color(0xFF01438F)),
+                                                  color: _sortAscending ? const Color(0xFF003876) : Colors.white,
+                                                  border: Border.all(color: const Color(0xFF003876)),
                                                   borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
                                                 ),
                                                 child: Row(
@@ -338,14 +505,14 @@ final List<Map<String, dynamic>> _originalData = [
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color(0xFF01438F),
+                                                      color: _sortAscending ? Colors.white : const Color(0xFF003876),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color(0xFF01438F),
+                                                        color: _sortAscending ? Colors.white : const Color(0xFF003876),
                                                       ),
                                                     ),
                                                   ],
@@ -364,8 +531,8 @@ final List<Map<String, dynamic>> _originalData = [
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color(0xFF01438F) : Colors.white,
-                                                  border: Border.all(color: const Color(0xFF01438F)),
+                                                  color: !_sortAscending ? const Color(0xFF003876) : Colors.white,
+                                                  border: Border.all(color: const Color(0xFF003876)),
                                                   borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
                                                 ),
                                                 child: Row(
@@ -373,14 +540,14 @@ final List<Map<String, dynamic>> _originalData = [
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color(0xFF01438F),
+                                                      color: !_sortAscending ? Colors.white : const Color(0xFF003876),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color(0xFF01438F),
+                                                        color: !_sortAscending ? Colors.white : const Color(0xFF003876),
                                                       ),
                                                     ),
                                                   ],
@@ -405,35 +572,8 @@ final List<Map<String, dynamic>> _originalData = [
                             ),
                           ),
                           const SizedBox(height: 8),
-                          _buildFilterDropdown(
-                            "Gender",
-                            ["Male", "Female"],
-                            _selectedGender,
-                            (val) => setModalState(() => _selectedGender = val),
-                          ),
-                          _buildFilterDropdown(
-                            "Nation",
-                            ["Nation A", "Nation B"],
-                            _selectedNation,
-                            (val) => setModalState(() => _selectedNation = val),
-                          ),
-                          _buildFilterDropdown(
-                            "Region",
-                            ["Region 1", "Region 2"],
-                            _selectedRegion,
-                            (val) => setModalState(() => _selectedRegion = val),
-                          ),
-                          _buildFilterDropdown(
-                            "Age Group",
-                            ["<18", "18-30", "31-50", "51+"],
-                            _selectedAgeGroup,
-                            (val) => setModalState(() => _selectedAgeGroup = val),
-                          ),
-                          _buildFilterDropdown(
-                            "Membership",
-                            ["Basic", "Premium", "VIP"],
-                            _selectedMembershipCategory,
-                            (val) => setModalState(() => _selectedMembershipCategory = val),
+                          ..._tableConfig.filterOptions.map((filter) => 
+                            _buildFilterDropdown(filter)
                           ),
                         ],
                       ),
@@ -477,7 +617,7 @@ final List<Map<String, dynamic>> _originalData = [
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF01438F),
+                              backgroundColor: const Color(0xFF003876),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -501,7 +641,7 @@ final List<Map<String, dynamic>> _originalData = [
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(title: "MEMBERS LIST"),
       backgroundColor: const Color(0xFFD9D9D9),
       endDrawer: EndDrawer(),
       body: Column(
@@ -523,9 +663,9 @@ final List<Map<String, dynamic>> _originalData = [
               child: const SizedBox(
                 height: 80,
                 width: double.infinity,
-                child: Center(
+            child: Center(
                   child: Text(
-                    "MEMBERS",
+                    "MEMBERS LIST",
                     style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -535,7 +675,7 @@ final List<Map<String, dynamic>> _originalData = [
           Padding(
             padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
             child: Row(
-              children: [
+                children: [
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
@@ -558,10 +698,10 @@ final List<Map<String, dynamic>> _originalData = [
                   height: 48,
                   child: ElevatedButton.icon(
                     onPressed: _showFilterModal,
-                    icon: const Icon(Icons.filter_list),
+                    icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF01438F),
+                      backgroundColor: const Color(0xFF003876),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
@@ -575,7 +715,7 @@ final List<Map<String, dynamic>> _originalData = [
           ),
           Expanded(
             child: Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -591,15 +731,15 @@ final List<Map<String, dynamic>> _originalData = [
                 ),
                 child: CustomTable(
                   data: _filteredData,
-                  columns: columns,
-                  onRowTap: (row) {
-                    if (row != null) {
-                      print("Selected row: $row");
-                    } else {
-                      print("No row selected");
-                    }
-                  },
-                ),
+                  config: _tableConfig,
+                    onRowTap: (row) {
+                      if (row != null) {
+                        print("Selected row: $row");
+                      } else {
+                        print("No row selected");
+                      }
+                    },
+                  ),
               ),
             ),
           ),
