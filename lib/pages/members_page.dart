@@ -731,6 +731,7 @@ class _MembersPageState extends State<MembersPage> {
               ),
             ),
           ),
+          SizedBox(height: 20,)
         ],
       ),
     );
