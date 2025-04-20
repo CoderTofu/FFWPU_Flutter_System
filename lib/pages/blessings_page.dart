@@ -520,13 +520,13 @@ class _BlessingsPageState extends State<BlessingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "BLESSINGS LIST"),
+      appBar: CustomAppBar(title: "BLESSINGS INFORMATION"),
       backgroundColor: const Color(0xFFD9D9D9),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
             child: Row(
               children: [
                 Expanded(
@@ -568,7 +568,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

@@ -21,16 +21,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(1, 67, 143, 1),
-        
-         leading: Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: Image.asset(
-            'assets/images/ffwpu_logo.png',
-            width: 40,
-            height: 40,
-            fit: BoxFit.cover,
-            ),
-         ),
         centerTitle: true,
       ),
       body: Column(
@@ -38,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(50.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

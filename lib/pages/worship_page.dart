@@ -544,13 +544,13 @@ class _WorshipPageState extends State<WorshipPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "WORSHIP LIST"),
+      appBar: CustomAppBar(title: "WORSHIP EVENT INFORMATION"),
       backgroundColor: const Color(0xFFD9D9D9),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
             child: Row(
               children: [
                 Expanded(
@@ -592,7 +592,7 @@ class _WorshipPageState extends State<WorshipPage> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

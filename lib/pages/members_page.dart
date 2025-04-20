@@ -655,13 +655,13 @@ class _MembersPageState extends State<MembersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "MEMBERS LIST"),
+      appBar: CustomAppBar(title: "MEMBER INFORMATION"),
       backgroundColor: const Color(0xFFD9D9D9),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
             child: Row(
                 children: [
                 Expanded(
@@ -703,7 +703,7 @@ class _MembersPageState extends State<MembersPage> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
