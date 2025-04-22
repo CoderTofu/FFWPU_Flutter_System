@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       home: const MemberDetailPage(
-        name: 'Jane Doe',
-        email: 'jane@example.com',
-        role: 'Administrator',
+        memberID: "12",
       ),
     );
   }
