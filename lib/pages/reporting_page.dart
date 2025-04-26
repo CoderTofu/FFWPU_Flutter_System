@@ -33,7 +33,7 @@ class _ReportingPageState extends State<ReportingPage> {
         barRods: [
           BarChartRodData(
             toY: (index + 1) * 1000.0,
-            color: const Color(0xFF003876),
+            color: const Color.fromRGBO(1, 118, 178, 1),
             width: 16,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
@@ -68,7 +68,7 @@ class _ReportingPageState extends State<ReportingPage> {
         onChanged: onChanged,
         underline: Container(),
         style: const TextStyle(
-          color: Color(0xFF003876),
+          color: Color.fromRGBO(1, 118, 178, 1),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -111,7 +111,7 @@ class _ReportingPageState extends State<ReportingPage> {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF003876),
+              color: Color.fromRGBO(1, 118, 178, 1),
             ),
           ),
         ],
@@ -199,7 +199,7 @@ class _ReportingPageState extends State<ReportingPage> {
                           barTouchData: BarTouchData(
                             enabled: true,
                             touchTooltipData: BarTouchTooltipData(
-                              tooltipBgColor: const Color(0xFF003876),
+                              tooltipBgColor: const Color.fromRGBO(1, 118, 178, 1),
                               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                                 return BarTooltipItem(
                                   '${_selectedCurrency} ${rod.toY.toStringAsFixed(2)}',
@@ -286,7 +286,7 @@ class _ReportingPageState extends State<ReportingPage> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF003876),
+                      color: Color.fromRGBO(1, 118, 178, 1),
                     ),
                   ),
                   _buildFilterDropdown(
@@ -349,7 +349,7 @@ class _ReportingPageState extends State<ReportingPage> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF003876).withOpacity(0.1),
+                              color: const Color.fromRGBO(1, 118, 178, 1).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Row(
@@ -357,7 +357,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                 Icon(
                                   Icons.star_rounded,
                                   size: 20,
-                                  color: Color(0xFF003876),
+                                  color: Color.fromRGBO(1, 118, 178, 1),
                                 ),
                                 SizedBox(width: 8),
                                 Text(
@@ -365,7 +365,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF003876),
+                                    color: Color.fromRGBO(1, 118, 178, 1),
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -399,7 +399,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF003876).withOpacity(0.1),
+                                  color: const Color.fromRGBO(1, 118, 178, 1).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Center(
@@ -408,7 +408,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF003876),
+                                      color: Color.fromRGBO(1, 118, 178, 1),
                                     ),
                                   ),
                                 ),
@@ -442,7 +442,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF003876).withOpacity(0.1),
+                                  color: const Color.fromRGBO(1, 118, 178, 1).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -450,7 +450,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF003876),
+                                    color: Color.fromRGBO(1, 118, 178, 1),
                                   ),
                                 ),
                               ),

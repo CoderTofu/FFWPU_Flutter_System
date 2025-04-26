@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 1, 67, 143),
+      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
       automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),

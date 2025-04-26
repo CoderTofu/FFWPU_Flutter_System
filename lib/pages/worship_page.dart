@@ -285,7 +285,7 @@ class _WorshipPageState extends State<WorshipPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF003876),
+                      color: const Color.fromRGBO(1, 118, 178, 1),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -399,8 +399,8 @@ class _WorshipPageState extends State<WorshipPage> {
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color(0xFF003876) : Colors.white,
-                                                  border: Border.all(color: const Color(0xFF003876)),
+                                                  color: _sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
+                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
                                                   borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
                                                 ),
                                                 child: Row(
@@ -408,14 +408,14 @@ class _WorshipPageState extends State<WorshipPage> {
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color(0xFF003876),
+                                                      color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color(0xFF003876),
+                                                        color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -434,8 +434,8 @@ class _WorshipPageState extends State<WorshipPage> {
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color(0xFF003876) : Colors.white,
-                                                  border: Border.all(color: const Color(0xFF003876)),
+                                                  color: !_sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
+                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
                                                   borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
                                                 ),
                                                 child: Row(
@@ -443,14 +443,14 @@ class _WorshipPageState extends State<WorshipPage> {
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color(0xFF003876),
+                                                      color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color(0xFF003876),
+                                                        color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -520,7 +520,7 @@ class _WorshipPageState extends State<WorshipPage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF003876),
+                              backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -578,7 +578,7 @@ class _WorshipPageState extends State<WorshipPage> {
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF003876),
+                      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
