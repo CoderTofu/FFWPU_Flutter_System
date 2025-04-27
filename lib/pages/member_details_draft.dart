@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
 
-class MemberDetailPage extends StatefulWidget {
+class DisplayMember extends StatefulWidget {
   final String memberID;
 
-  const MemberDetailPage({Key? key, required this.memberID}) : super(key: key);
+  const DisplayMember({Key? key, required this.memberID}) : super(key: key);
 
   @override
-  _MemberDetailPageState createState() => _MemberDetailPageState();
+  _DisplayMemberState createState() => _DisplayMemberState();
 }
 
-class _MemberDetailPageState extends State<MemberDetailPage>
+class _DisplayMemberState extends State<DisplayMember>
     with SingleTickerProviderStateMixin {
   Map<String, dynamic> userData = {};
   List<dynamic> userBlessings = [];
@@ -22,7 +22,6 @@ class _MemberDetailPageState extends State<MemberDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
     // Load dummy data instead of fetching from API
     loadDummyData();
   }
@@ -73,19 +72,20 @@ class _MemberDetailPageState extends State<MemberDetailPage>
     });
   }
 
+  // Updated infoField with reduced spacing
   Widget infoField(String label, String? value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.min, // Take minimum space vertically
       children: [
         Text(
           label,
           style: TextStyle(
-            fontSize: 13,
+            fontSize: 13, // Slightly smaller font
             color: Colors.grey[600],
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 2), // Reduced spacing between label and value
         Text(
           value ?? '—',
           style: const TextStyle(
@@ -108,12 +108,13 @@ class _MemberDetailPageState extends State<MemberDetailPage>
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Main Card
                     Card(
                       elevation: 4,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(
+                            20.0), // Slightly reduced padding
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -214,7 +215,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                               ),
                             ),
 
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 20), // Reduced spacing
 
                             // Tabs
                             TabBar(
@@ -226,11 +227,11 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                               ],
                             ),
 
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 12), // Reduced spacing
 
                             // Tab Content
                             SizedBox(
-                              height: 450, // Adjust based on content
+                              height: 450, // Slightly reduced height
                               child: TabBarView(
                                 controller: _tabController,
                                 children: [
@@ -248,9 +249,10 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             color: const Color(0xFFBE9231),
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                        const SizedBox(
+                                            height: 12), // Reduced spacing
 
-                                        // Grid layout for personal info
+                                        // Grid layout for personal info with reduced spacing
                                         GridView.count(
                                           crossAxisCount: MediaQuery.of(context)
                                                       .size
@@ -286,10 +288,12 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                           ],
                                         ),
 
-                                        const SizedBox(height: 16),
+                                        const SizedBox(
+                                            height: 16), // Reduced spacing
                                         infoField(
                                             'Address', userData['Address']),
-                                        const SizedBox(height: 6),
+                                        const SizedBox(
+                                            height: 6), // Reduced spacing
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -327,9 +331,10 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             color: const Color(0xFFBE9231),
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                        const SizedBox(
+                                            height: 12), // Reduced spacing
 
-                                        // Grid layout for spiritual info
+                                        // Grid layout for spiritual info with reduced spacing
                                         GridView.count(
                                           crossAxisCount: MediaQuery.of(context)
                                                       .size
@@ -363,15 +368,19 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
                                                   'Spiritual Parents',
                                                   style: TextStyle(
-                                                    fontSize: 13,
+                                                    fontSize:
+                                                        13, // Slightly smaller font
                                                     color: Colors.grey[600],
                                                   ),
                                                 ),
-                                                const SizedBox(height: 2),
+                                                const SizedBox(
+                                                    height:
+                                                        2), // Reduced spacing
                                                 Text(
                                                   userData[
                                                           'Spiritual Parent'] ??
@@ -385,7 +394,8 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                           ],
                                         ),
 
-                                        const SizedBox(height: 20),
+                                        const SizedBox(
+                                            height: 20), // Reduced spacing
                                         Text(
                                           'Blessings',
                                           style: TextStyle(
@@ -394,15 +404,17 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             color: const Color(0xFFBE9231),
                                           ),
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(
+                                            height: 8), // Reduced spacing
 
-                                        // Blessings list
+                                        // Blessings list with reduced spacing
                                         ...userBlessings
                                             .map((blessing) => Container(
                                                   margin: const EdgeInsets.only(
-                                                      bottom: 8),
-                                                  padding:
-                                                      const EdgeInsets.all(10),
+                                                      bottom:
+                                                          8), // Reduced margin
+                                                  padding: const EdgeInsets.all(
+                                                      10), // Reduced padding
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey[100],
                                                     borderRadius:
@@ -417,7 +429,9 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                                             .primaryColor,
                                                         size: 20,
                                                       ),
-                                                      const SizedBox(width: 12),
+                                                      const SizedBox(
+                                                          width:
+                                                              12), // Reduced spacing
                                                       Expanded(
                                                         child: Column(
                                                           crossAxisAlignment:
@@ -436,7 +450,8 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                                               ),
                                                             ),
                                                             const SizedBox(
-                                                                height: 2),
+                                                                height:
+                                                                    2), // Reduced spacing
                                                             Row(
                                                               children: [
                                                                 const Icon(
@@ -473,7 +488,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                     ),
                                   ),
 
-                                  // History Tab - Now with dummy mission history data
+                                  // History Tab with reduced spacing
                                   SingleChildScrollView(
                                     child: Column(
                                       crossAxisAlignment:
@@ -487,9 +502,10 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             color: const Color(0xFFBE9231),
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                        const SizedBox(
+                                            height: 12), // Reduced spacing
 
-                                        // Dummy mission history items
+                                        // Dummy mission history items with reduced spacing
                                         _buildMissionHistoryItem(
                                             role: 'Volunteer Coordinator',
                                             organization:
@@ -519,7 +535,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -527,6 +543,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
     );
   }
 
+  // Updated mission history item with reduced spacing
   Widget _buildMissionHistoryItem({
     required String role,
     required String organization,
@@ -534,7 +551,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
     required String date,
   }) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8), // Reduced margin
       child: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -544,7 +561,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
             ),
           ),
         ),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12), // Reduced padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -556,7 +573,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                   color: Theme.of(context).primaryColor,
                   size: 20,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 10), // Reduced spacing
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -580,12 +597,12 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 8), // Reduced spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4), // Smaller padding for chip
                   backgroundColor: Colors.grey[100],
                   label: Text(country),
                 ),
