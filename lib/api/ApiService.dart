@@ -85,7 +85,6 @@ class ApiService {
           'password': password,
         }),
       );
-      print('Login response: ${response.body}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         await _saveTokens(data['access'], data['refresh']);
@@ -167,7 +166,6 @@ class ApiService {
           'Content-Type': 'application/json',
         },
       );
-      print('Fetch all members response: ${response.body}');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
@@ -180,6 +178,45 @@ class ApiService {
       return null;
     } catch (e) {
       print('Fetch all members error: $e');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> fetchWorshipEvents() async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) return null;
+
+      if (_isTokenExpired(accessToken)) {
+        final refreshed = await _refreshToken();
+        if (!refreshed) return null;
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/worship/'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) {
+          var transformed = Map<String, dynamic>.from(item);
+          transformed['Church'] = item['Church']['Name'];
+          return transformed;
+        }).toList();
+      } else if (response.statusCode == 401) {
+        final refreshed = await _refreshToken();
+        if (!refreshed) return null;
+        return fetchWorshipEvents();
+      }
+      return null;
+    } catch (e) {
+      print('Fetch worship events error: $e');
       return null;
     }
   }

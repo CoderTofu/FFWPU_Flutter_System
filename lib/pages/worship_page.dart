@@ -1,3 +1,4 @@
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
@@ -12,97 +13,64 @@ class WorshipPage extends StatefulWidget {
 }
 
 class _WorshipPageState extends State<WorshipPage> {
-  final List<Map<String, dynamic>> _originalData = [
-    {
-      "Worship_ID": "1",
-      "Name": "sample",
-      "Date": "2025-03-03",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "2",
-      "Name": "Sample Event",
-      "Date": "2015-03-17",
-      "Church_Name": "Test1",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "3",
-      "Name": "Test Event",
-      "Date": "2025-03-15",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "4",
-      "Name": "Testing",
-      "Date": "2015-03-15",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "5",
-      "Name": "Testing",
-      "Date": "2010-12-28",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "6",
-      "Name": "Cool Event",
-      "Date": "2008-11-02",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "7",
-      "Name": "Event Name",
-      "Date": "2020-02-03",
-      "Church_Name": "Test1",
-      "Worship_Type": "Online",
-    },
-    {
-      "Worship_ID": "8",
-      "Name": "Greatest Event Ever",
-      "Date": "2021-07-13",
-      "Church_Name": "Test1",
-      "Worship_Type": "Online",
-    },
-    {
-      "Worship_ID": "9",
-      "Name": "Event of the Decade",
-      "Date": "2021-04-23",
-      "Church_Name": "Test1",
-      "Worship_Type": "Onsite",
-    },
-    {
-      "Worship_ID": "10",
-      "Name": "guest event",
-      "Date": "2002-05-30",
-      "Church_Name": "Test",
-      "Worship_Type": "Onsite",
-    },
-  ];
-
-  late List<Map<String, dynamic>> _filteredData;
+  final _apiService = ApiService();
+  List<Map<String, dynamic>> _originalData = [];
+  List<Map<String, dynamic>> _filteredData = [];
+  bool _isLoading = true;
+  String? _error;
   String _searchQuery = '';
   String _sortColumn = 'Date';
   bool _sortAscending = false;
   Map<String, String?> _activeFilters = {};
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchWorshipData();
+  }
+
+  Future<void> _fetchWorshipData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final data = await _apiService.fetchWorshipEvents();
+
+      if (data != null) {
+        setState(() {
+          _originalData = data;
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+        _applyFilters();
+      } else {
+        setState(() {
+          _error = 'Failed to load worship events';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'An error occurred while loading worship events';
+        _isLoading = false;
+      });
+    }
+  }
+
   final TableConfig _tableConfig = TableConfig(
     columns: [
       TableColumn(
-        key: 'Worship_ID',
-        header: 'Worship ID',
+        key: 'ID',
+        header: 'ID',
         width: 120,
         textAlign: TextAlign.left,
         isSortable: true,
       ),
       TableColumn(
-        key: 'Name',
-        header: 'Name',
+        key: 'Event Name',
+        header: 'Event Name',
         width: 300,
         textAlign: TextAlign.left,
         isSortable: true,
@@ -115,14 +83,14 @@ class _WorshipPageState extends State<WorshipPage> {
         isSortable: true,
       ),
       TableColumn(
-        key: 'Church_Name',
-        header: 'Church Name',
+        key: 'Church',
+        header: 'Church',
         width: 150,
         textAlign: TextAlign.left,
         isSortable: true,
       ),
       TableColumn(
-        key: 'Worship_Type',
+        key: 'Worship Type',
         header: 'Worship Type',
         width: 150,
         textAlign: TextAlign.left,
@@ -130,29 +98,23 @@ class _WorshipPageState extends State<WorshipPage> {
       ),
     ],
     responsiveColumns: {
-      'lg': ['Worship_ID', 'Name', 'Date', 'Church_Name', 'Worship_Type'],
-      'md': ['Worship_ID', 'Name', 'Date', 'Worship_Type'],
-      'sm': ['Name', 'Date'],
+      'lg': ['ID', 'Event Name', 'Date', 'Church', 'Worship Type'],
+      'md': ['ID', 'Event Name', 'Date', 'Worship Type'],
+      'sm': ['Event Name', 'Date'],
     },
     filterOptions: [
       FilterOption(
         label: 'Church',
-        field: 'Church_Name',
+        field: 'Church Name',
         options: ['Test', 'Test1'],
       ),
       FilterOption(
         label: 'Worship Type',
-        field: 'Worship_Type',
+        field: 'Worship Type',
         options: ['Online', 'Onsite'],
       ),
     ],
   );
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredData = List.from(_originalData);
-  }
 
   void _handleSearch(String query) {
     setState(() {
@@ -199,9 +161,10 @@ class _WorshipPageState extends State<WorshipPage> {
     setState(() {
       _filteredData = _originalData.where((item) {
         // Search filter
-        final matchSearch = _searchQuery.isEmpty || item.values.any(
-          (value) => value.toString().toLowerCase().contains(_searchQuery),
-        );
+        final matchSearch = _searchQuery.isEmpty ||
+            item.values.any(
+              (value) => value.toString().toLowerCase().contains(_searchQuery),
+            );
 
         // Apply all active filters
         final matchFilters = _activeFilters.entries.every((filter) {
@@ -341,7 +304,8 @@ class _WorshipPageState extends State<WorshipPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'Field',
@@ -357,7 +321,8 @@ class _WorshipPageState extends State<WorshipPage> {
                                           filled: true,
                                           fillColor: Colors.white,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         items: _tableConfig.columns
@@ -365,7 +330,8 @@ class _WorshipPageState extends State<WorshipPage> {
                                             .map((col) {
                                           return DropdownMenuItem(
                                             value: col.key,
-                                            child: Text(col.header.replaceAll('\n', ' ')),
+                                            child: Text(col.header
+                                                .replaceAll('\n', ' ')),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
@@ -397,25 +363,46 @@ class _WorshipPageState extends State<WorshipPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                                                  color: _sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          left: Radius.circular(
+                                                              8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: _sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: _sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -432,25 +419,47 @@ class _WorshipPageState extends State<WorshipPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                                                  color: !_sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          right:
+                                                              Radius.circular(
+                                                                  8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: !_sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: !_sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -475,9 +484,8 @@ class _WorshipPageState extends State<WorshipPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._tableConfig.filterOptions.map((filter) => 
-                            _buildFilterDropdown(filter)
-                          ),
+                          ..._tableConfig.filterOptions
+                              .map((filter) => _buildFilterDropdown(filter)),
                         ],
                       ),
                     ),
@@ -520,13 +528,15 @@ class _WorshipPageState extends State<WorshipPage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                              backgroundColor:
+                                  const Color.fromRGBO(1, 118, 178, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply', style: TextStyle(color: Colors.white)),
+                            child: const Text('Apply',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],
@@ -561,7 +571,8 @@ class _WorshipPageState extends State<WorshipPage> {
                       labelText: 'Search',
                       hintText: 'Enter search term...',
                       prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                       constraints: const BoxConstraints(maxHeight: 48),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -592,7 +603,7 @@ class _WorshipPageState extends State<WorshipPage> {
           ),
           Expanded(
             child: Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -620,7 +631,9 @@ class _WorshipPageState extends State<WorshipPage> {
               ),
             ),
           ),
-          SizedBox(height: 20,)
+          SizedBox(
+            height: 20,
+          )
         ],
       ),
     );
