@@ -1,119 +1,26 @@
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:ffwpu_flutter_view/components/data_table.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/table_config.dart';
+import 'package:ffwpu_flutter_view/pages/member_detail_page.dart';
 
 class MembersPage extends StatefulWidget {
- const MembersPage({super.key});
+  const MembersPage({super.key});
 
   @override
   State<MembersPage> createState() => _MembersPageState();
 }
 
 class _MembersPageState extends State<MembersPage> {
-  final List<Map<String, dynamic>> _originalData = [
-    {
-      "Member_ID": "1",
-      "Title": "Mr.",
-      "Full_Name": "Test Test Test",
-      "Gender": "Male",
-      "Date_Of_Birth": "2016-10-11",
-      "Age": 8,
-      "Marital_Status": "Single",
-      "Address": "123 Address Street",
-      "Country": "Philippines",
-      "Region": "Asia Pacific",
-      "Membership_Category": "Regular",
-      "Generation": "1st Generation",
-      "Blessing_Status": "IDK",
-      "Spiritual_Birthday": "2025-02-06"
-    },
-    {
-      "Member_ID": "5",
-      "Title": "Mr.",
-      "Full_Name": "Rafael Sebastian de la Cruz Torres",
-      "Gender": "Male",
-      "Date_Of_Birth": "2003-09-08",
-      "Age": 21,
-      "Marital_Status": "Single",
-      "Address": "123 Address Street",
-      "Country": "Philippines",
-      "Region": "Asia Pacific",
-      "Membership_Category": "Regular",
-      "Generation": "1st Generation",
-      "Blessing_Status": "idk",
-      "Spiritual_Birthday": "2022-05-11"
-    },
-    {
-      "Member_ID": "8",
-      "Title": "Mrs.",
-      "Full_Name": "Maria Santos",
-      "Gender": "Female",
-      "Date_Of_Birth": "1990-03-15",
-      "Age": 34,
-      "Marital_Status": "Married",
-      "Address": "456 Main Avenue",
-      "Country": "Korea",
-      "Region": "East Asia",
-      "Membership_Category": "Premium",
-      "Generation": "2nd Generation",
-      "Blessing_Status": "Blessed",
-      "Spiritual_Birthday": "2010-08-22"
-    },
-    {
-      "Member_ID": "12",
-      "Title": "Ms.",
-      "Full_Name": "Sarah Johnson",
-      "Gender": "Female",
-      "Date_Of_Birth": "1995-07-20",
-      "Age": 28,
-      "Marital_Status": "Single",
-      "Address": "789 Oak Road",
-      "Country": "United States",
-      "Region": "North America",
-      "Membership_Category": "VIP",
-      "Generation": "1st Generation",
-      "Blessing_Status": "Matching",
-      "Spiritual_Birthday": "2015-12-01"
-    },
-    {
-      "Member_ID": "15",
-      "Title": "Mr.",
-      "Full_Name": "John Smith",
-      "Gender": "Male",
-      "Date_Of_Birth": "1988-11-30",
-      "Age": 35,
-      "Marital_Status": "Married",
-      "Address": "321 Pine Street",
-      "Country": "United Kingdom",
-      "Region": "Europe",
-      "Membership_Category": "Premium",
-      "Generation": "2nd Generation",
-      "Blessing_Status": "Blessed",
-      "Spiritual_Birthday": "2008-09-15"
-    },
-    {
-      "Member_ID": "18",
-      "Title": "Dr.",
-      "Full_Name": "Emily Chen",
-      "Gender": "Female",
-      "Date_Of_Birth": "1992-04-25",
-      "Age": 31,
-      "Marital_Status": "Single",
-      "Address": "567 Cherry Lane",
-      "Country": "Singapore",
-      "Region": "Asia Pacific",
-      "Membership_Category": "VIP",
-      "Generation": "1st Generation",
-      "Blessing_Status": "Matching",
-      "Spiritual_Birthday": "2012-06-30"
-    },
-  ];
-
-  late List<Map<String, dynamic>> _filteredData;
+  final _apiService = ApiService();
+  List<Map<String, dynamic>> _originalData = [];
+  List<Map<String, dynamic>> _filteredData = [];
+  bool _isLoading = true;
+  String _error = '';
   String _searchQuery = '';
-  String _sortColumn = 'Full_Name';
+  String _sortColumn = 'Full Name';
   bool _sortAscending = true;
   Map<String, String?> _activeFilters = {};
 
@@ -134,7 +41,7 @@ class _MembersPageState extends State<MembersPage> {
         isSortable: true,
       ),
       TableColumn(
-        key: 'Full_Name',
+        key: 'Full Name',
         header: 'Full Name',
         width: 200,
         isSortable: true,
@@ -218,12 +125,23 @@ class _MembersPageState extends State<MembersPage> {
     ],
     responsiveColumns: {
       'lg': [
-        'Member_ID', 'Title', 'Full_Name', 'Gender', 'Date_Of_Birth', 
-        'Age', 'Marital_Status', 'Address', 'Country', 'Region', 
-        'Membership_Category', 'Generation', 'Blessing_Status', 'Spiritual_Birthday'
+        'ID',
+        'Title',
+        'Full Name',
+        'Gender',
+        'Birthday',
+        'Age',
+        'Marital Status',
+        'Address',
+        'Country',
+        'Region',
+        'Membership Category',
+        'Generation',
+        'Blessing Status',
+        'Spiritual Birthday'
       ],
-      'md': ['Member_ID', 'Full_Name', 'Gender', 'Age', 'Country', 'Region'],
-      'sm': ['Member_ID', 'Full_Name', 'Gender'],
+      'md': ['ID', 'Full Name', 'Gender', 'Age', 'Country', 'Region'],
+      'sm': ['ID', 'Full Name', 'Gender'],
     },
     filterOptions: [
       FilterOption(
@@ -259,10 +177,39 @@ class _MembersPageState extends State<MembersPage> {
     ],
   );
 
+  Future<void> _fetchMembers() async {
+    setState(() {
+      _isLoading = true;
+      _error = '';
+    });
+
+    try {
+      final members = await _apiService.fetchAllMembers();
+
+      if (members != null) {
+        setState(() {
+          _originalData = members;
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _error = 'Failed to fetch members. Please try again.';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'An error occurred while fetching members.';
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _filteredData = List.from(_originalData);
+    _fetchMembers();
   }
 
   void _handleSearch(String query) {
@@ -310,9 +257,10 @@ class _MembersPageState extends State<MembersPage> {
     setState(() {
       _filteredData = _originalData.where((item) {
         // Search filter
-        final matchSearch = _searchQuery.isEmpty || item.values.any(
-          (value) => value.toString().toLowerCase().contains(_searchQuery),
-        );
+        final matchSearch = _searchQuery.isEmpty ||
+            item.values.any(
+              (value) => value.toString().toLowerCase().contains(_searchQuery),
+            );
 
         // Apply all active filters
         final matchFilters = _activeFilters.entries.every((filter) {
@@ -331,7 +279,7 @@ class _MembersPageState extends State<MembersPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Full_Name';
+      _sortColumn = 'Full Name';
       _sortAscending = true;
       _applyFilters();
     });
@@ -452,7 +400,8 @@ class _MembersPageState extends State<MembersPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'Field',
@@ -468,7 +417,8 @@ class _MembersPageState extends State<MembersPage> {
                                           filled: true,
                                           fillColor: Colors.white,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         items: _tableConfig.columns
@@ -476,7 +426,8 @@ class _MembersPageState extends State<MembersPage> {
                                             .map((col) {
                                           return DropdownMenuItem(
                                             value: col.key,
-                                            child: Text(col.header.replaceAll('\n', ' ')),
+                                            child: Text(col.header
+                                                .replaceAll('\n', ' ')),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
@@ -508,25 +459,46 @@ class _MembersPageState extends State<MembersPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                                                  color: _sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          left: Radius.circular(
+                                                              8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: _sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: _sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -543,25 +515,47 @@ class _MembersPageState extends State<MembersPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                                                  color: !_sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          right:
+                                                              Radius.circular(
+                                                                  8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: !_sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: !_sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -586,9 +580,8 @@ class _MembersPageState extends State<MembersPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._tableConfig.filterOptions.map((filter) => 
-                            _buildFilterDropdown(filter)
-                          ),
+                          ..._tableConfig.filterOptions
+                              .map((filter) => _buildFilterDropdown(filter)),
                         ],
                       ),
                     ),
@@ -631,13 +624,17 @@ class _MembersPageState extends State<MembersPage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                              backgroundColor:
+                                  const Color.fromRGBO(1, 118, 178, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply',style: TextStyle(color: Colors.white),),
+                            child: const Text(
+                              'Apply',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ],
@@ -663,7 +660,7 @@ class _MembersPageState extends State<MembersPage> {
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
             child: Row(
-                children: [
+              children: [
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
@@ -672,7 +669,8 @@ class _MembersPageState extends State<MembersPage> {
                       labelText: 'Search',
                       hintText: 'Enter search term...',
                       prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                       constraints: const BoxConstraints(maxHeight: 48),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -720,18 +718,26 @@ class _MembersPageState extends State<MembersPage> {
                 child: CustomTable(
                   data: _filteredData,
                   config: _tableConfig,
-                    onRowTap: (row) {
-                      if (row != null) {
-                        print("Selected row: $row");
-                      } else {
-                        print("No row selected");
-                      }
-                    },
-                  ),
+                  onRowTap: (row) {
+                    if (row != null) {
+                      final memberId = row['ID'].toString();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailPage(
+                            memberID: memberId,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
           ),
-          SizedBox(height: 20,)
+          SizedBox(
+            height: 20,
+          )
         ],
       ),
     );

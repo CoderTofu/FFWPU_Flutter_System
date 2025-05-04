@@ -2,7 +2,7 @@ import 'package:ffwpu_flutter_view/components/button.dart';
 import 'package:ffwpu_flutter_view/pages/members_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +14,46 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final _apiService = ApiService();
+  bool _isLoading = false;
+  String? _errorMessage;
 
+  Future<void> _handleLogin() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final success = await _apiService.login(
+        _usernameController.text,
+        _passwordController.text,
+      );
+
+      if (success) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MembersPage()),
+          );
+        }
+      } else {
+        setState(() {
+          _errorMessage = 'Invalid username or password';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred. Please try again.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text(
-                        "Admin Login", 
-                        style: GoogleFonts.roboto(
+                    Text(
+                      "Admin Login",
+                      style: GoogleFonts.roboto(
                         fontWeight: FontWeight.bold,
                         color: const Color.fromRGBO(1, 118, 178, 1),
                         fontSize: 24,
@@ -42,9 +81,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
                     Container(
-                        width: double.infinity,
-                        constraints: const BoxConstraints(maxWidth: 400),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                      width: double.infinity,
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 30),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -59,58 +99,47 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Column(
                         children: [
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
                           TextField(
                             controller: _usernameController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Username',
                               hintText: "Enter your username...",
                               border: OutlineInputBorder(),
-                                labelStyle: const TextStyle(fontSize: 14),
+                              labelStyle: TextStyle(fontSize: 14),
                             ),
                           ),
                           const SizedBox(height: 10),
                           TextField(
                             controller: _passwordController,
                             obscureText: true,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Password',
                               hintText: "Enter your password...",
                               border: OutlineInputBorder(),
-                                labelStyle: const TextStyle(fontSize: 14),
+                              labelStyle: TextStyle(fontSize: 14),
                             ),
                           ),
                           const SizedBox(height: 20),
-                          // ElevatedButton(
-                          //   onPressed: () {
-                          //     Navigator.pushNamed(context, '/members');
-                          //     final username = _usernameController.text;
-                          //     final password = _passwordController.text;
-                          //     showDialog(
-                          //     context: context,
-                          //     builder: (context) => AlertDialog(
-                          //       title: const Text("Login Details"),
-                          //       content: Text("Username: $username \nPassword: $password"),
-                          //       actions: [
-                          //       TextButton(
-                          //         onPressed: () => Navigator.of(context).pop(),
-                          //         child: const Text("OK"),
-                          //       ),
-                          //       ],
-                          //     ),
-                          //     );
-                          //   },
-                          //   child: const Text("Test"),
-                          // ),
                           Button(
-                            onPressed: () {
-                              Navigator.push(context, // Navigate to MembersPage
-                                MaterialPageRoute(
-                                  builder: (context) => const MembersPage(),
-                                ),
-                              );
-                            }, 
-                            isFullWidth: true, 
-                            buttonText: "Login",),
+                            onPressed: _isLoading
+                                ? null
+                                : () {
+                                    _handleLogin(); // Wrap the async call in a sync callback
+                                  },
+                            isFullWidth: true,
+                            buttonText: _isLoading ? "Logging in..." : "Login",
+                          ),
                         ],
                       ),
                     )
@@ -122,5 +151,12 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

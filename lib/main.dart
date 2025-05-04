@@ -16,9 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MemberDetailPage(
-        memberID: "12",
-      ),
+      home: const LoginPage(), // Change to LoginPage() for login screen
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
@@ -13,64 +14,49 @@ class MemberDetailPage extends StatefulWidget {
 
 class _MemberDetailPageState extends State<MemberDetailPage>
     with SingleTickerProviderStateMixin {
+  final _apiService = ApiService();
   Map<String, dynamic> userData = {};
   List<dynamic> userBlessings = [];
+  List<dynamic> userHistory = [];
   late TabController _tabController;
   bool isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
-    // Load dummy data instead of fetching from API
-    loadDummyData();
+    _fetchMemberData();
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+  Future<void> _fetchMemberData() async {
+    setState(() {
+      isLoading = true;
+      _error = null;
+    });
 
-  void loadDummyData() {
-    // Simulate network delay
-    Future.delayed(const Duration(milliseconds: 800), () {
+    try {
+      final data = await _apiService.fetchMemberData(widget.memberID);
+      print(data);
+      if (data != null) {
+        setState(() {
+          userData = data;
+          userBlessings = data['Blessings'] ?? [];
+          userHistory = data['Missions'] ?? [];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          _error = 'Failed to load member details';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        userData = {
-          'Full Name': 'Jane Doe',
-          'Membership Category': 'Regular',
-          'Generation': '1st',
-          'Email': 'janedoe@gmail.com',
-          'Phone': '09991112345',
-          'Gender': 'Female',
-          'Date Of Birth': '12 April 2000',
-          'Age': '25',
-          'Country': 'Philippine',
-          'Marital Status': 'Single',
-          'Address': '1738 Bato St., Tondo, Manila',
-          'Spiritual Birthday': '18 July 2024',
-          'Spiritual Parent': 'Zhu Yuan'
-        };
-
-        userBlessings = [
-          {
-            'Name Of Blessing': 'First Blessing',
-            'Blessing Date': '15 August 2010'
-          },
-          {
-            'Name Of Blessing': 'Marriage Blessing',
-            'Blessing Date': '22 February 2015'
-          },
-          {
-            'Name Of Blessing': 'Family Blessing',
-            'Blessing Date': '30 November 2018'
-          }
-        ];
-
+        _error = 'An error occurred while loading member details';
         isLoading = false;
       });
-    });
+    }
   }
 
   Widget infoField(String label, String? value) {
@@ -276,11 +262,11 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             infoField(
                                                 'Gender', userData['Gender']),
                                             infoField('Date of Birth',
-                                                userData['Date Of Birth']),
+                                                userData['Birthday']),
                                             infoField('Age',
                                                 userData['Age']?.toString()),
                                             infoField(
-                                                'Nation', userData['Country']),
+                                                'Nation', userData['Nation']),
                                             infoField('Marital Status',
                                                 userData['Marital Status']),
                                           ],
@@ -426,7 +412,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                                           children: [
                                                             Text(
                                                               blessing[
-                                                                      'Name Of Blessing'] ??
+                                                                      'name'] ??
                                                                   'Unknown Blessing',
                                                               style:
                                                                   const TextStyle(
@@ -449,7 +435,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                                                     width: 4),
                                                                 Text(
                                                                   blessing[
-                                                                          'Blessing Date'] ??
+                                                                          'date'] ??
                                                                       'Unknown Date',
                                                                   style:
                                                                       TextStyle(
@@ -476,42 +462,31 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                   // History Tab - Now with dummy mission history data
                                   SingleChildScrollView(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Mission History',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: const Color(0xFFBE9231),
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Mission History',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color(0xFFBE9231),
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                        // Dummy mission history items
-                                        _buildMissionHistoryItem(
-                                            role: 'Volunteer Coordinator',
-                                            organization:
-                                                'Community Outreach Program',
-                                            country: 'United States',
-                                            date: 'Jan 2020 - Present'),
-
-                                        _buildMissionHistoryItem(
-                                            role: 'Youth Mentor',
-                                            organization:
-                                                'Youth Leadership Foundation',
-                                            country: 'Canada',
-                                            date: 'Mar 2018 - Dec 2019'),
-
-                                        _buildMissionHistoryItem(
-                                            role: 'Assistant Director',
-                                            organization:
-                                                'International Peace Initiative',
-                                            country: 'South Korea',
-                                            date: 'Jun 2015 - Feb 2018'),
-                                      ],
-                                    ),
+                                          const SizedBox(height: 12),
+                                          ...userHistory.map((history) =>
+                                              _buildMissionHistoryItem(
+                                                role: history['role'] ??
+                                                    'Unknown',
+                                                organization:
+                                                    history['organization'] ??
+                                                        'Unknown',
+                                                country: history['country'] ??
+                                                    'Unknown',
+                                                date: history['start_date'] ??
+                                                    'Unknown',
+                                              )),
+                                        ]),
                                   ),
                                 ],
                               ),

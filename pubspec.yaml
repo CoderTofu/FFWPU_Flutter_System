@@ -17,6 +17,9 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.2.1
   fl_chart: ^0.65.0
+  http: ^1.2.0
+  shared_preferences: ^2.2.2
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:

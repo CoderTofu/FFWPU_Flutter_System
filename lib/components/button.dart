@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isFullWidth;
   final String buttonText; // Added text parameter
 
@@ -21,18 +21,18 @@ class Button extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromRGBO(1, 118, 178, 1), // Custom color
           foregroundColor: Colors.white, // Text color
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14), // Button padding
+          padding: const EdgeInsets.symmetric(
+              horizontal: 32, vertical: 14), // Button padding
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5), // Rounded corners
           ),
           elevation: 5, // Shadow effect
         ),
         child: Text(
-          buttonText, 
+          buttonText,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 }
-
