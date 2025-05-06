@@ -169,7 +169,15 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data.cast<Map<String, dynamic>>();
+        final List<Map<String, dynamic>> map =
+            data.cast<Map<String, dynamic>>();
+        return map
+            .map((item) => {
+                  ...item,
+                  'Region': item['Region']['name'],
+                  'Church': item['Church']['Name']
+                })
+            .toList();
       } else if (response.statusCode == 401) {
         final refreshed = await _refreshToken();
         if (!refreshed) return null;

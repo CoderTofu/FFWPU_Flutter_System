@@ -81,7 +81,7 @@ class _MembersPageState extends State<MembersPage> {
         isSortable: false,
       ),
       TableColumn(
-        key: 'Country',
+        key: 'Nation',
         header: 'Country',
         width: 150,
         textAlign: TextAlign.center,
@@ -126,7 +126,6 @@ class _MembersPageState extends State<MembersPage> {
     responsiveColumns: {
       'lg': [
         'ID',
-        'Title',
         'Full Name',
         'Gender',
         'Birthday',
