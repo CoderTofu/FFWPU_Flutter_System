@@ -1,0 +1,2 @@
+C:/Users/James and Peter/FFWPU_Flutter_System/android/app/.cxx/Debug/1v5t5g22/x86/CMakeFiles/edit_cache.dir
+C:/Users/James and Peter/FFWPU_Flutter_System/android/app/.cxx/Debug/1v5t5g22/x86/CMakeFiles/rebuild_cache.dir

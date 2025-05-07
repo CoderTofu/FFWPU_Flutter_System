@@ -86,7 +86,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "MEMBER INFORMATION"),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       endDrawer: EndDrawer(),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

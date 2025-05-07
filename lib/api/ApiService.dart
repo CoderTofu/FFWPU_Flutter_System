@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ApiService {
   static const String baseUrl =
-      'http://192.168.1.11:8000/api'; // Replace with your API base URL
+      'http://192.168.0.21:8000/api'; // Replace with your API base URL
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
 
@@ -140,6 +140,42 @@ class ApiService {
       return null;
     } catch (e) {
       print('Fetch member error: $e');
+      return null;
+    }
+  }
+
+  // Add this method to your ApiService class
+  Future<Map<String, dynamic>?> fetchWorshipEvent(String eventId) async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) return null;
+
+      if (_isTokenExpired(accessToken)) {
+        final refreshed = await _refreshToken();
+        if (!refreshed) return null;
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/worship/$eventId/'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 401) {
+        final refreshed = await _refreshToken();
+        if (!refreshed) return null;
+        return fetchWorshipEvent(eventId);
+      }
+      return null;
+    } catch (e) {
+      print('Fetch worship event error: $e');
       return null;
     }
   }

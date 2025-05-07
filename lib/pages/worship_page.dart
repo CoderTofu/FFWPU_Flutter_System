@@ -4,6 +4,7 @@ import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:ffwpu_flutter_view/components/data_table.dart';
 import 'package:ffwpu_flutter_view/components/table_config.dart';
+import 'package:ffwpu_flutter_view/pages/worship_detail_page.dart';
 
 class WorshipPage extends StatefulWidget {
   const WorshipPage({super.key});
@@ -551,6 +552,27 @@ class _WorshipPageState extends State<WorshipPage> {
     );
   }
 
+  // Navigate to ViewWorshipEvent when a row is tapped
+  void _navigateToEventDetails(Map<String, dynamic> row) {
+    if (row.containsKey('ID')) {
+      final eventId = row['ID'].toString();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewWorshipEvent(eventId: eventId),
+        ),
+      );
+    } else {
+      // Show an error if the ID is missing
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to view event details: Event ID not found'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -617,21 +639,26 @@ class _WorshipPageState extends State<WorshipPage> {
                     ),
                   ],
                 ),
-                child: CustomTable(
-                  data: _filteredData,
-                  config: _tableConfig,
-                  onRowTap: (row) {
-                    if (row != null) {
-                      print("Selected row: $row");
-                    } else {
-                      print("No row selected");
-                    }
-                  },
-                ),
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _error != null
+                        ? Center(
+                            child: Text(_error!,
+                                style: const TextStyle(color: Colors.red)))
+                        : CustomTable(
+                            data: _filteredData,
+                            config: _tableConfig,
+                            onRowTap: (row) {
+                              if (row != null) {
+                                // Navigate to the ViewWorshipEvent screen when a row is tapped
+                                _navigateToEventDetails(row);
+                              }
+                            },
+                          ),
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           )
         ],
