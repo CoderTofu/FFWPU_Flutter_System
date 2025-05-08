@@ -54,7 +54,9 @@ class _CustomTableState extends State<CustomTable> {
       width: width,
       color: backgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      alignment: textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
+      alignment: textAlign == TextAlign.center
+          ? Alignment.center
+          : Alignment.centerLeft,
       child: child,
     );
   }
@@ -65,12 +67,14 @@ class _CustomTableState extends State<CustomTable> {
       builder: (context, constraints) {
         _updateTableSize(constraints);
         final visibleColumns = widget.config.getVisibleTableColumns(_tableSize);
-        final totalMinWidth = visibleColumns.fold<double>(0, (sum, col) => sum + col.width);
+        final totalMinWidth =
+            visibleColumns.fold<double>(0, (sum, col) => sum + col.width);
         final availableWidth = constraints.maxWidth;
         final shouldExpand = totalMinWidth < availableWidth;
-        
-        final expansionRatio = shouldExpand ? availableWidth / totalMinWidth : 1.0;
-        
+
+        final expansionRatio =
+            shouldExpand ? availableWidth / totalMinWidth : 1.0;
+
         Widget buildTableContent(List<TableColumn> columns) {
           return SizedBox(
             width: totalMinWidth * expansionRatio,
@@ -92,7 +96,7 @@ class _CustomTableState extends State<CustomTable> {
                             child: Text(
                               column.header,
                               style: const TextStyle(
-                                color: Color(0xFFFFD700),
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),
@@ -108,12 +112,12 @@ class _CustomTableState extends State<CustomTable> {
                 ...widget.data.map((row) {
                   final index = widget.data.indexOf(row);
                   final isSelected = _selectedRow == index;
-                  
+
                   return InkWell(
                     onTap: () => _handleRowTap(index, row),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected 
+                        color: isSelected
                             ? widget.config.selectedRowColor
                             : widget.config.rowColor,
                         border: Border(

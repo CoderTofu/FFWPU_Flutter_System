@@ -3,6 +3,7 @@ import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/table_config.dart';
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 
 class DonationsPage extends StatefulWidget {
   const DonationsPage({super.key});
@@ -12,284 +13,15 @@ class DonationsPage extends StatefulWidget {
 }
 
 class _DonationsPageState extends State<DonationsPage> {
-  final List<Map<String, dynamic>> _originalData = [
-    {
-      "Donation_ID": "1",
-      "Member_ID": "1",
-      "Full_Name": "Test Test Test",
-      "Date": "2025-03-15",
-      "Church": "Test",
-      "Amount": 502.00,
-      "Currency": "EUR"
-    },
-    {
-      "Donation_ID": "2",
-      "Member_ID": "5",
-      "Full_Name": "Rafael Sebastian de la Cruz Torres",
-      "Date": "2024-02-20",
-      "Church": "Main Church",
-      "Amount": 750.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "3",
-      "Member_ID": "1",
-      "Full_Name": "Test Test Test",
-      "Date": "2003-09-08",
-      "Church": "Test",
-      "Amount": 1000.00,
-      "Currency": "PHP"
-    },
-    {
-      "Donation_ID": "4",
-      "Member_ID": "5",
-      "Full_Name": "Rafael Sebastian de la Cruz Torres",
-      "Date": "2003-09-08",
-      "Church": "Test",
-      "Amount": 500.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "5",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-01-15",
-      "Church": "Seoul Center",
-      "Amount": 100000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "6",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-02-01",
-      "Church": "New York Center",
-      "Amount": 1000.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "7",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-02-05",
-      "Church": "London Center",
-      "Amount": 800.00,
-      "Currency": "GBP"
-    },
-    {
-      "Donation_ID": "8",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-02-10",
-      "Church": "Singapore Center",
-      "Amount": 1500.00,
-      "Currency": "CNY"
-    },
-    {
-      "Donation_ID": "9",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-02-15",
-      "Church": "Seoul Center",
-      "Amount": 150000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "10",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-02-20",
-      "Church": "New York Center",
-      "Amount": 1200.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "11",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-02-25",
-      "Church": "London Center",
-      "Amount": 1000.00,
-      "Currency": "JPY"
-    },
-    {
-      "Donation_ID": "12",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-03-01",
-      "Church": "Singapore Center",
-      "Amount": 2000.00,
-      "Currency": "JPY"
-    },
-    {
-      "Donation_ID": "13",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-03-05",
-      "Church": "Seoul Center",
-      "Amount": 80000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "14",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-03-10",
-      "Church": "New York Center",
-      "Amount": 800.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "15",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-03-15",
-      "Church": "London Center",
-      "Amount": 600.00,
-      "Currency": "GBP"
-    },
-    {
-      "Donation_ID": "16",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-03-20",
-      "Church": "Singapore Center",
-      "Amount": 1000.00,
-      "Currency": "JPY"
-    },
-    {
-      "Donation_ID": "17",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-03-25",
-      "Church": "Seoul Center",
-      "Amount": 120000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "18",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-04-01",
-      "Church": "New York Center",
-      "Amount": 1500.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "19",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-04-05",
-      "Church": "London Center",
-      "Amount": 750.00,
-      "Currency": "GBP"
-    },
-    {
-      "Donation_ID": "20",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-04-10",
-      "Church": "Singapore Center",
-      "Amount": 2500.00,
-      "Currency": "CNY"
-    },
-    {
-      "Donation_ID": "21",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-04-15",
-      "Church": "Seoul Center",
-      "Amount": 90000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "22",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-04-20",
-      "Church": "New York Center",
-      "Amount": 900.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "23",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-04-25",
-      "Church": "London Center",
-      "Amount": 850.00,
-      "Currency": "GBP"
-    },
-    {
-      "Donation_ID": "24",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-05-01",
-      "Church": "Singapore Center",
-      "Amount": 1800.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "25",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-05-05",
-      "Church": "Seoul Center",
-      "Amount": 130000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "26",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-05-10",
-      "Church": "New York Center",
-      "Amount": 1100.00,
-      "Currency": "USD"
-    },
-    {
-      "Donation_ID": "27",
-      "Member_ID": "15",
-      "Full_Name": "John Smith",
-      "Date": "2024-05-15",
-      "Church": "London Center",
-      "Amount": 950.00,
-      "Currency": "GBP"
-    },
-    {
-      "Donation_ID": "28",
-      "Member_ID": "18",
-      "Full_Name": "Emily Chen",
-      "Date": "2024-05-20",
-      "Church": "Singapore Center",
-      "Amount": 2200.00,
-      "Currency": "CNY"
-    },
-    {
-      "Donation_ID": "29",
-      "Member_ID": "8",
-      "Full_Name": "Maria Santos",
-      "Date": "2024-05-25",
-      "Church": "Seoul Center",
-      "Amount": 110000.00,
-      "Currency": "KRW"
-    },
-    {
-      "Donation_ID": "30",
-      "Member_ID": "12",
-      "Full_Name": "Sarah Johnson",
-      "Date": "2024-06-01",
-      "Church": "New York Center",
-      "Amount": 1300.00,
-      "Currency": "USD"
-    }
-  ];
-
-  late List<Map<String, dynamic>> _filteredData;
+  final _apiService = ApiService();
+  List<Map<String, dynamic>> _originalData = [];
+  List<Map<String, dynamic>> _filteredData = [];
   String _searchQuery = '';
   String _sortColumn = 'Date';
   bool _sortAscending = false;
   Map<String, String?> _activeFilters = {};
+  bool _isLoading = true;
+  String? _error;
 
   final TableConfig _tableConfig = TableConfig(
     columns: [
@@ -343,7 +75,15 @@ class _DonationsPageState extends State<DonationsPage> {
       ),
     ],
     responsiveColumns: {
-      'lg': ['Donation_ID', 'Member_ID', 'Full_Name', 'Date', 'Church', 'Amount', 'Currency'],
+      'lg': [
+        'Donation_ID',
+        'Member_ID',
+        'Full_Name',
+        'Date',
+        'Church',
+        'Amount',
+        'Currency'
+      ],
       'md': ['Donation_ID', 'Full_Name', 'Date', 'Amount', 'Currency'],
       'sm': ['Donation_ID', 'Full_Name', 'Amount'],
     },
@@ -351,20 +91,152 @@ class _DonationsPageState extends State<DonationsPage> {
       FilterOption(
         label: 'Church',
         field: 'Church',
-        options: ['Test', 'Main Church', 'Seoul Center', 'New York Center', 'London Center', 'Singapore Center'],
+        options: [
+          'Test',
+          'Main Church',
+          'Seoul Center',
+          'New York Center',
+          'London Center',
+          'Singapore Center'
+        ],
       ),
       FilterOption(
         label: 'Currency',
         field: 'Currency',
-        options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY'],
+        options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY', 'GBP'],
       ),
     ],
+    headerColor: const Color.fromRGBO(28, 92, 168, 1),
+    rowColor: Colors.white,
+    selectedRowColor: const Color(0xFFE8F1FF),
+    hoverRowColor: const Color(0xFFF5F9FF),
+    rowHeight: 48,
+    headerHeight: 48,
+    showCheckboxColumn: false,
+    showVerticalScrollbar: true,
+    showHorizontalScrollbar: true,
+    borderRadius: const BorderRadius.all(Radius.circular(8)),
   );
 
   @override
   void initState() {
     super.initState();
-    _filteredData = List.from(_originalData);
+    _fetchDonationsData();
+  }
+
+  Future<void> _fetchDonationsData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      // Try to fetch from API
+      final data = await _apiService.fetchAllDonations();
+
+      if (data != null && data.isNotEmpty) {
+        setState(() {
+          _originalData = data;
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+        _applyFilters();
+      } else {
+        // If API fails or returns empty data, use dummy data
+        print('API returned null or empty data, using fallback data');
+        setState(() {
+          _originalData = [
+            {
+              "Donation_ID": "1",
+              "Member_ID": "1",
+              "Full_Name": "Test Test Test",
+              "Date": "2025-03-15",
+              "Church": "Test",
+              "Amount": 502.00,
+              "Currency": "EUR"
+            },
+            {
+              "Donation_ID": "2",
+              "Member_ID": "5",
+              "Full_Name": "Rafael Sebastian de la Cruz Torres",
+              "Date": "2024-02-20",
+              "Church": "Main Church",
+              "Amount": 750.00,
+              "Currency": "USD"
+            },
+            {
+              "Donation_ID": "3",
+              "Member_ID": "1",
+              "Full_Name": "Test Test Test",
+              "Date": "2003-09-08",
+              "Church": "Test",
+              "Amount": 1000.00,
+              "Currency": "PHP"
+            },
+            // Add more fallback data as needed
+            {
+              "Donation_ID": "4",
+              "Member_ID": "5",
+              "Full_Name": "Rafael Sebastian de la Cruz Torres",
+              "Date": "2003-09-08",
+              "Church": "Test",
+              "Amount": 500.00,
+              "Currency": "USD"
+            },
+            {
+              "Donation_ID": "5",
+              "Member_ID": "8",
+              "Full_Name": "Maria Santos",
+              "Date": "2024-01-15",
+              "Church": "Seoul Center",
+              "Amount": 100000.00,
+              "Currency": "KRW"
+            }
+          ];
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+        _applyFilters();
+      }
+    } catch (e) {
+      // Handle any exceptions by using dummy data
+      print('Error fetching donations: $e, using fallback data');
+      setState(() {
+        _error = 'Error loading donations: $e';
+        _isLoading = false;
+        _originalData = [
+          {
+            "Donation_ID": "1",
+            "Member_ID": "1",
+            "Full_Name": "Test Test Test",
+            "Date": "2025-03-15",
+            "Church": "Test",
+            "Amount": 502.00,
+            "Currency": "EUR"
+          },
+          {
+            "Donation_ID": "2",
+            "Member_ID": "5",
+            "Full_Name": "Rafael Sebastian de la Cruz Torres",
+            "Date": "2024-02-20",
+            "Church": "Main Church",
+            "Amount": 750.00,
+            "Currency": "USD"
+          },
+          {
+            "Donation_ID": "3",
+            "Member_ID": "1",
+            "Full_Name": "Test Test Test",
+            "Date": "2003-09-08",
+            "Church": "Test",
+            "Amount": 1000.00,
+            "Currency": "PHP"
+          }
+        ];
+        _filteredData = List.from(_originalData);
+      });
+      _applyFilters();
+    }
   }
 
   void _handleSearch(String query) {
@@ -412,9 +284,10 @@ class _DonationsPageState extends State<DonationsPage> {
     setState(() {
       _filteredData = _originalData.where((item) {
         // Search filter
-        final matchSearch = _searchQuery.isEmpty || item.values.any(
-          (value) => value.toString().toLowerCase().contains(_searchQuery),
-        );
+        final matchSearch = _searchQuery.isEmpty ||
+            item.values.any(
+              (value) => value.toString().toLowerCase().contains(_searchQuery),
+            );
 
         // Apply all active filters
         final matchFilters = _activeFilters.entries.every((filter) {
@@ -498,7 +371,7 @@ class _DonationsPageState extends State<DonationsPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(1, 118, 178, 1),
+                      color: const Color.fromRGBO(28, 92, 168, 1),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -554,7 +427,8 @@ class _DonationsPageState extends State<DonationsPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'Field',
@@ -570,7 +444,8 @@ class _DonationsPageState extends State<DonationsPage> {
                                           filled: true,
                                           fillColor: Colors.white,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         items: _tableConfig.columns
@@ -578,7 +453,8 @@ class _DonationsPageState extends State<DonationsPage> {
                                             .map((col) {
                                           return DropdownMenuItem(
                                             value: col.key,
-                                            child: Text(col.header.replaceAll('\n', ' ')),
+                                            child: Text(col.header
+                                                .replaceAll('\n', ' ')),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
@@ -610,25 +486,46 @@ class _DonationsPageState extends State<DonationsPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                                                  color: _sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          28, 92, 168, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              28, 92, 168, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          left: Radius.circular(
+                                                              8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: _sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: _sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -645,25 +542,47 @@ class _DonationsPageState extends State<DonationsPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                                                  color: !_sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          28, 92, 168, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              28, 92, 168, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          right:
+                                                              Radius.circular(
+                                                                  8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: !_sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: !_sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -688,9 +607,8 @@ class _DonationsPageState extends State<DonationsPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._tableConfig.filterOptions.map((filter) => 
-                            _buildFilterDropdown(filter)
-                          ),
+                          ..._tableConfig.filterOptions
+                              .map((filter) => _buildFilterDropdown(filter)),
                         ],
                       ),
                     ),
@@ -733,13 +651,15 @@ class _DonationsPageState extends State<DonationsPage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                              backgroundColor:
+                                  const Color.fromRGBO(28, 92, 168, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply', style: TextStyle(color: Colors.white)),
+                            child: const Text('Apply',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],
@@ -758,7 +678,7 @@ class _DonationsPageState extends State<DonationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "DONATION INFORMATION"),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
@@ -774,7 +694,8 @@ class _DonationsPageState extends State<DonationsPage> {
                       labelText: 'Search',
                       hintText: 'Enter search term...',
                       prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                       constraints: const BoxConstraints(maxHeight: 48),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -791,7 +712,7 @@ class _DonationsPageState extends State<DonationsPage> {
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                      backgroundColor: const Color.fromRGBO(28, 92, 168, 1),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
@@ -806,31 +727,64 @@ class _DonationsPageState extends State<DonationsPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: CustomTable(
-                  data: _filteredData,
-                  config: _tableConfig,
-                  onRowTap: (row) {
-                    if (row != null) {
-                      print("Selected row: $row");
-                    } else {
-                      print("No row selected");
-                    }
-                  },
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _error!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: _fetchDonationsData,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: _filteredData.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'No donations found',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              : CustomTable(
+                                  data: _filteredData,
+                                  config: _tableConfig,
+                                  onRowTap: (row) {
+                                    if (row != null) {
+                                      print("Selected row: $row");
+                                      // TODO: Navigate to donation details page
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => ViewDonationPage(
+                                      //         donationId: row['Donation_ID'].toString()),
+                                      //   ),
+                                      // );
+                                    }
+                                  },
+                                ),
+                        ),
             ),
           ),
           const SizedBox(height: 20),

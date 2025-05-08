@@ -19,7 +19,7 @@ class Button extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromRGBO(1, 118, 178, 1), // Custom color
+          backgroundColor: const Color.fromRGBO(28, 92, 168, 1), // Custom color
           foregroundColor: Colors.white, // Text color
           padding: const EdgeInsets.symmetric(
               horizontal: 32, vertical: 14), // Button padding

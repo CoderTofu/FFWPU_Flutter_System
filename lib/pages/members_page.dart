@@ -344,7 +344,7 @@ class _MembersPageState extends State<MembersPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(1, 118, 178, 1),
+                      color: const Color.fromRGBO(28, 92, 168, 1),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -465,12 +465,12 @@ class _MembersPageState extends State<MembersPage> {
                                                 decoration: BoxDecoration(
                                                   color: _sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -487,7 +487,7 @@ class _MembersPageState extends State<MembersPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -498,7 +498,7 @@ class _MembersPageState extends State<MembersPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -521,12 +521,12 @@ class _MembersPageState extends State<MembersPage> {
                                                 decoration: BoxDecoration(
                                                   color: !_sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -544,7 +544,7 @@ class _MembersPageState extends State<MembersPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -555,7 +555,7 @@ class _MembersPageState extends State<MembersPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -625,7 +625,7 @@ class _MembersPageState extends State<MembersPage> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromRGBO(1, 118, 178, 1),
+                                  const Color.fromRGBO(28, 92, 168, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -653,7 +653,7 @@ class _MembersPageState extends State<MembersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "MEMBER INFORMATION"),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
@@ -687,7 +687,7 @@ class _MembersPageState extends State<MembersPage> {
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                      backgroundColor: const Color.fromRGBO(28, 92, 168, 1),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(

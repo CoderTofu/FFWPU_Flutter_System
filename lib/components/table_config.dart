@@ -49,7 +49,7 @@ class TableConfig {
     required this.columns,
     required this.responsiveColumns,
     this.filterOptions = const [],
-    this.headerColor = const Color.fromRGBO(1, 118, 178, 1),
+    this.headerColor = const Color.fromRGBO(28, 92, 168, 1),
     this.rowColor = Colors.white,
     this.selectedRowColor = const Color(0xFFE8F1FF),
     this.hoverRowColor = const Color(0xFFF5F9FF),
@@ -74,4 +74,4 @@ class TableConfig {
     return getVisibleTableColumns(size)
         .fold(0.0, (sum, column) => sum + column.width);
   }
-} 
+}

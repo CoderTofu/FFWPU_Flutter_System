@@ -97,6 +97,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Card(
+                      color: Colors.white,
                       elevation: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -152,19 +153,23 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                     spacing: 8,
                                     children: [
                                       Chip(
-                                        backgroundColor: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                        backgroundColor: Colors.grey[100],
                                         label: Text(
-                                            userData['Membership Category'] ??
-                                                'Unknown'),
+                                          userData['Membership Category'] ??
+                                              'Unknown',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                       Chip(
-                                        backgroundColor: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                        backgroundColor: Colors.grey[100],
                                         label: Text(
-                                            'Generation: ${userData['Generation'] ?? 'Unknown'}'),
+                                          'Generation: ${userData['Generation'] ?? 'Unknown'}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -210,6 +215,11 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                 Tab(text: 'Spiritual'),
                                 Tab(text: 'History'),
                               ],
+                              indicatorColor: Colors
+                                  .black, // Color of the line under the selected tab
+                              labelColor: Colors
+                                  .black, // Color of the selected tab text
+                              unselectedLabelColor: Colors.grey,
                             ),
 
                             const SizedBox(height: 12),
@@ -509,6 +519,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
     required String date,
   }) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 8),
       child: Container(
         decoration: BoxDecoration(

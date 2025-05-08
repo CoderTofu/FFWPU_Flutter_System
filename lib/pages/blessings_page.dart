@@ -4,7 +4,7 @@ import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/data_table.dart';
 import 'package:ffwpu_flutter_view/components/table_config.dart';
 import 'package:ffwpu_flutter_view/pages/blessing_detail_page.dart';
-import 'package:ffwpu_flutter_view/api/ApiService.dart'; // Import ApiService
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 
 class BlessingsPage extends StatefulWidget {
   const BlessingsPage({super.key});
@@ -67,7 +67,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
         options: ['Vertical', 'Horizontal'],
       ),
     ],
-    headerColor: const Color.fromRGBO(1, 118, 178, 1),
+    headerColor: const Color.fromRGBO(28, 92, 168, 1),
     rowColor: Colors.white,
     selectedRowColor: const Color(0xFFE8F1FF),
     hoverRowColor: const Color(0xFFF5F9FF),
@@ -337,7 +337,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(1, 118, 178, 1),
+                      color: const Color.fromRGBO(28, 92, 168, 1),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -458,12 +458,12 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                 decoration: BoxDecoration(
                                                   color: _sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -480,7 +480,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -491,7 +491,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -514,12 +514,12 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                 decoration: BoxDecoration(
                                                   color: !_sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -537,7 +537,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -548,7 +548,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -618,7 +618,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromRGBO(1, 118, 178, 1),
+                                  const Color.fromRGBO(28, 92, 168, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -644,7 +644,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "BLESSINGS INFORMATION"),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
@@ -678,7 +678,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                      backgroundColor: const Color.fromRGBO(28, 92, 168, 1),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(

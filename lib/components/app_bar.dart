@@ -16,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+      elevation: 0, // optional: disable shadow if you only want the line
       automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -29,17 +30,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu,
-                color: Colors.black), // Set your icon color here
+            icon: const Icon(Icons.menu, color: Colors.black),
             onPressed: () {
               Scaffold.of(context).openEndDrawer();
             },
           ),
         ),
       ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(4.0),
+        child: Container(
+          color: Color.fromRGBO(0, 0, 0, 0.25),
+          height: 4.0,
+        ),
+      ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 4.0);
 }

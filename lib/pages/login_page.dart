@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+        backgroundColor: const Color.fromRGBO(28, 92, 168, 1),
         centerTitle: true,
       ),
       body: Column(
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Admin Login",
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.bold,
-                        color: const Color.fromRGBO(1, 118, 178, 1),
+                        color: const Color.fromRGBO(28, 92, 168, 1),
                         fontSize: 24,
                       ),
                     ),

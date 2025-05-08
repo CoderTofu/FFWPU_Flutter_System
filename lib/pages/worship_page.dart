@@ -249,7 +249,7 @@ class _WorshipPageState extends State<WorshipPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(1, 118, 178, 1),
+                      color: const Color.fromRGBO(28, 92, 168, 1),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -370,12 +370,12 @@ class _WorshipPageState extends State<WorshipPage> {
                                                 decoration: BoxDecoration(
                                                   color: _sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -392,7 +392,7 @@ class _WorshipPageState extends State<WorshipPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -403,7 +403,7 @@ class _WorshipPageState extends State<WorshipPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -426,12 +426,12 @@ class _WorshipPageState extends State<WorshipPage> {
                                                 decoration: BoxDecoration(
                                                   color: !_sortAscending
                                                       ? const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       : Colors.white,
                                                   border: Border.all(
                                                       color:
                                                           const Color.fromRGBO(
-                                                              1, 118, 178, 1)),
+                                                              28, 92, 168, 1)),
                                                   borderRadius:
                                                       const BorderRadius
                                                           .horizontal(
@@ -449,7 +449,7 @@ class _WorshipPageState extends State<WorshipPage> {
                                                           ? Colors.white
                                                           : const Color
                                                               .fromRGBO(
-                                                              1, 118, 178, 1),
+                                                              28, 92, 168, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
@@ -460,7 +460,7 @@ class _WorshipPageState extends State<WorshipPage> {
                                                             ? Colors.white
                                                             : const Color
                                                                 .fromRGBO(
-                                                                1, 118, 178, 1),
+                                                                28, 92, 168, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -530,7 +530,7 @@ class _WorshipPageState extends State<WorshipPage> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromRGBO(1, 118, 178, 1),
+                                  const Color.fromRGBO(28, 92, 168, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -577,7 +577,7 @@ class _WorshipPageState extends State<WorshipPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "WORSHIP EVENT INFORMATION"),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       endDrawer: EndDrawer(),
       body: Column(
         children: [
@@ -611,7 +611,7 @@ class _WorshipPageState extends State<WorshipPage> {
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                     label: const Text("Filters"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                      backgroundColor: const Color.fromRGBO(28, 92, 168, 1),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
