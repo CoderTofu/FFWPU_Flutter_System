@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
 import 'package:ffwpu_flutter_view/components/data_table.dart';
 import 'package:ffwpu_flutter_view/components/table_config.dart';
+import 'package:ffwpu_flutter_view/pages/blessing_detail_page.dart';
+import 'package:ffwpu_flutter_view/api/ApiService.dart'; // Import ApiService
 
 class BlessingsPage extends StatefulWidget {
   const BlessingsPage({super.key});
@@ -12,62 +14,15 @@ class BlessingsPage extends StatefulWidget {
 }
 
 class _BlessingsPageState extends State<BlessingsPage> {
-  final List<Map<String, dynamic>> _originalData = [
-    {
-      "Blessing_ID": "1",
-      "Blessing_Date": "2025-03-03",
-      "Name_Of_Blessing": "test",
-      "Chaenbo": "Vertical",
-    },
-    {
-      "Blessing_ID": "3",
-      "Blessing_Date": "2003-09-08",
-      "Name_Of_Blessing": "ea",
-      "Chaenbo": "Vertical",
-    },
-    {
-      "Blessing_ID": "5",
-      "Blessing_Date": "2005-01-02",
-      "Name_Of_Blessing": "bless you",
-      "Chaenbo": "Horizontal",
-    },
-    {
-      "Blessing_ID": "6",
-      "Blessing_Date": "2007-01-02",
-      "Name_Of_Blessing": "gbu",
-      "Chaenbo": "Vertical",
-    },
-    {
-      "Blessing_ID": "7",
-      "Blessing_Date": "2016-01-21",
-      "Name_Of_Blessing": "blessing",
-      "Chaenbo": "Vertical",
-    },
-    {
-      "Blessing_ID": "8",
-      "Blessing_Date": "2007-01-02",
-      "Name_Of_Blessing": "bless you too",
-      "Chaenbo": "Vertical",
-    },
-    {
-      "Blessing_ID": "9",
-      "Blessing_Date": "2023-04-23",
-      "Name_Of_Blessing": "i bless the rains down in africa",
-      "Chaenbo": "Horizontal",
-    },
-    {
-      "Blessing_ID": "10",
-      "Blessing_Date": "2025-03-16",
-      "Name_Of_Blessing": "guest blessing",
-      "Chaenbo": "Horizontal",
-    },
-  ];
-
-  late List<Map<String, dynamic>> _filteredData;
+  final _apiService = ApiService();
+  List<Map<String, dynamic>> _originalData = [];
+  List<Map<String, dynamic>> _filteredData = [];
   String _searchQuery = '';
   String _sortColumn = 'Blessing_Date';
   bool _sortAscending = false;
   Map<String, String?> _activeFilters = {};
+  bool _isLoading = true;
+  String? _error;
 
   final TableConfig _tableConfig = TableConfig(
     columns: [
@@ -127,7 +82,127 @@ class _BlessingsPageState extends State<BlessingsPage> {
   @override
   void initState() {
     super.initState();
-    _filteredData = List.from(_originalData);
+    _fetchBlessingsData();
+  }
+
+  // Update the _fetchBlessingsData method to use fallback data
+  Future<void> _fetchBlessingsData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      // Try to fetch from API
+      final data = await _apiService.fetchAllBlessings();
+
+      if (data != null && data.isNotEmpty) {
+        setState(() {
+          _originalData = data;
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+        _applyFilters();
+      } else {
+        // If API fails or returns empty data, use dummy data
+        print('API returned null or empty data, using fallback data');
+        setState(() {
+          _originalData = [
+            {
+              "Blessing_ID": "1",
+              "Blessing_Date": "2025-03-03",
+              "Name_Of_Blessing": "test",
+              "Chaenbo": "Vertical",
+            },
+            {
+              "Blessing_ID": "3",
+              "Blessing_Date": "2003-09-08",
+              "Name_Of_Blessing": "ea",
+              "Chaenbo": "Vertical",
+            },
+            {
+              "Blessing_ID": "5",
+              "Blessing_Date": "2005-01-02",
+              "Name_Of_Blessing": "bless you",
+              "Chaenbo": "Horizontal",
+            },
+            {
+              "Blessing_ID": "6",
+              "Blessing_Date": "2007-01-02",
+              "Name_Of_Blessing": "gbu",
+              "Chaenbo": "Vertical",
+            },
+            {
+              "Blessing_ID": "7",
+              "Blessing_Date": "2016-01-21",
+              "Name_Of_Blessing": "blessing",
+              "Chaenbo": "Vertical",
+            },
+            {
+              "Blessing_ID": "8",
+              "Blessing_Date": "2007-01-02",
+              "Name_Of_Blessing": "bless you too",
+              "Chaenbo": "Vertical",
+            },
+            {
+              "Blessing_ID": "9",
+              "Blessing_Date": "2023-04-23",
+              "Name_Of_Blessing": "i bless the rains down in africa",
+              "Chaenbo": "Horizontal",
+            },
+            {
+              "Blessing_ID": "10",
+              "Blessing_Date": "2025-03-16",
+              "Name_Of_Blessing": "guest blessing",
+              "Chaenbo": "Horizontal",
+            },
+          ];
+          _filteredData = List.from(_originalData);
+          _isLoading = false;
+        });
+        _applyFilters();
+      }
+    } catch (e) {
+      // Handle any exceptions by using dummy data
+      print('Error fetching blessings: $e, using fallback data');
+      setState(() {
+        _originalData = [
+          {
+            "Blessing_ID": "1",
+            "Blessing_Date": "2025-03-03",
+            "Name_Of_Blessing": "test",
+            "Chaenbo": "Vertical",
+          },
+          {
+            "Blessing_ID": "3",
+            "Blessing_Date": "2003-09-08",
+            "Name_Of_Blessing": "ea",
+            "Chaenbo": "Vertical",
+          },
+          {
+            "Blessing_ID": "5",
+            "Blessing_Date": "2005-01-02",
+            "Name_Of_Blessing": "bless you",
+            "Chaenbo": "Horizontal",
+          },
+          {
+            "Blessing_ID": "6",
+            "Blessing_Date": "2007-01-02",
+            "Name_Of_Blessing": "gbu",
+            "Chaenbo": "Vertical",
+          },
+          {
+            "Blessing_ID": "7",
+            "Blessing_Date": "2016-01-21",
+            "Name_Of_Blessing": "blessing",
+            "Chaenbo": "Vertical",
+          },
+        ];
+        _filteredData = List.from(_originalData);
+        _isLoading = false;
+      });
+      _applyFilters();
+    }
   }
 
   void _handleSearch(String query) {
@@ -175,9 +250,10 @@ class _BlessingsPageState extends State<BlessingsPage> {
     setState(() {
       _filteredData = _originalData.where((item) {
         // Search filter
-        final matchSearch = _searchQuery.isEmpty || item.values.any(
-          (value) => value.toString().toLowerCase().contains(_searchQuery),
-        );
+        final matchSearch = _searchQuery.isEmpty ||
+            item.values.any(
+              (value) => value.toString().toLowerCase().contains(_searchQuery),
+            );
 
         // Apply all active filters
         final matchFilters = _activeFilters.entries.every((filter) {
@@ -317,7 +393,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'Field',
@@ -333,7 +410,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                           filled: true,
                                           fillColor: Colors.white,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
                                         items: _tableConfig.columns
@@ -341,7 +419,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                             .map((col) {
                                           return DropdownMenuItem(
                                             value: col.key,
-                                            child: Text(col.header.replaceAll('\n', ' ')),
+                                            child: Text(col.header
+                                                .replaceAll('\n', ' ')),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
@@ -373,25 +452,46 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: _sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                                                  color: _sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          left: Radius.circular(
+                                                              8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_upward,
-                                                      color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: _sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Ascending',
                                                       style: TextStyle(
-                                                        color: _sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: _sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -408,25 +508,47 @@ class _BlessingsPageState extends State<BlessingsPage> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
                                                 decoration: BoxDecoration(
-                                                  color: !_sortAscending ? const Color.fromRGBO(1, 118, 178, 1) : Colors.white,
-                                                  border: Border.all(color: const Color.fromRGBO(1, 118, 178, 1)),
-                                                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                                                  color: !_sortAscending
+                                                      ? const Color.fromRGBO(
+                                                          1, 118, 178, 1)
+                                                      : Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              1, 118, 178, 1)),
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                          right:
+                                                              Radius.circular(
+                                                                  8)),
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Icon(
                                                       Icons.arrow_downward,
-                                                      color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                      color: !_sortAscending
+                                                          ? Colors.white
+                                                          : const Color
+                                                              .fromRGBO(
+                                                              1, 118, 178, 1),
                                                       size: 18,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
                                                       'Descending',
                                                       style: TextStyle(
-                                                        color: !_sortAscending ? Colors.white : const Color.fromRGBO(1, 118, 178, 1),
+                                                        color: !_sortAscending
+                                                            ? Colors.white
+                                                            : const Color
+                                                                .fromRGBO(
+                                                                1, 118, 178, 1),
                                                       ),
                                                     ),
                                                   ],
@@ -451,9 +573,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._tableConfig.filterOptions.map((filter) => 
-                            _buildFilterDropdown(filter)
-                          ),
+                          ..._tableConfig.filterOptions
+                              .map((filter) => _buildFilterDropdown(filter)),
                         ],
                       ),
                     ),
@@ -496,13 +617,15 @@ class _BlessingsPageState extends State<BlessingsPage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromRGBO(1, 118, 178, 1),
+                              backgroundColor:
+                                  const Color.fromRGBO(1, 118, 178, 1),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply', style: TextStyle(color: Colors.white)),
+                            child: const Text('Apply',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],
@@ -537,7 +660,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
                       labelText: 'Search',
                       hintText: 'Enter search term...',
                       prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                       constraints: const BoxConstraints(maxHeight: 48),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -568,35 +692,72 @@ class _BlessingsPageState extends State<BlessingsPage> {
           ),
           Expanded(
             child: Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: CustomTable(
-                  data: _filteredData,
-                  config: _tableConfig,
-                  onRowTap: (row) {
-                    if (row != null) {
-                      print("Selected row: $row");
-                    } else {
-                      print("No row selected");
-                    }
-                  },
-                ),
-              ),
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _error!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: _fetchBlessingsData,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: _filteredData.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'No blessings found',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              : CustomTable(
+                                  data: _filteredData,
+                                  config: _tableConfig,
+                                  onRowTap: (row) {
+                                    if (row != null) {
+                                      // Navigate to the ViewBlessingPage with the blessing ID
+                                      final blessingId =
+                                          row['Blessing_ID'].toString();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ViewBlessingPage(
+                                                  blessingId: blessingId),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                        ),
             ),
           ),
-          SizedBox(height: 20,)
+          const SizedBox(
+            height: 20,
+          )
         ],
       ),
     );

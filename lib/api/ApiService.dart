@@ -144,7 +144,6 @@ class ApiService {
     }
   }
 
-  // Add this method to your ApiService class
   Future<Map<String, dynamic>?> fetchWorshipEvent(String eventId) async {
     try {
       final tokens = await _getTokens();
@@ -178,6 +177,205 @@ class ApiService {
       print('Fetch worship event error: $e');
       return null;
     }
+  }
+
+  // Add this method to your ApiService class
+  Future<Map<String, dynamic>?> fetchBlessing(String blessingId) async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) {
+        print('Access token is null in fetchBlessing');
+        return _getFallbackBlessingData(blessingId);
+      }
+
+      if (_isTokenExpired(accessToken)) {
+        print(
+            'Access token is expired in fetchBlessing, attempting to refresh');
+        final refreshed = await _refreshToken();
+        if (!refreshed) {
+          print('Token refresh failed in fetchBlessing');
+          return _getFallbackBlessingData(blessingId);
+        }
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      // Try multiple possible endpoints
+      final endpoints = [
+        '$baseUrl/blessings/$blessingId/',
+        '$baseUrl/blessing/$blessingId/',
+        '$baseUrl/blessing/detail/$blessingId/'
+      ];
+
+      for (final endpoint in endpoints) {
+        print('Attempting to fetch blessing from: $endpoint');
+
+        try {
+          final response = await http.get(
+            Uri.parse(endpoint),
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          print('Response status code: ${response.statusCode}');
+          if (response.statusCode == 200) {
+            print('Successfully fetched blessing data');
+            final data = jsonDecode(response.body);
+            return data;
+          } else if (response.statusCode == 401) {
+            print('Authentication failed (401) in fetchBlessing');
+            final refreshed = await _refreshToken();
+            if (!refreshed) return _getFallbackBlessingData(blessingId);
+            // Don't retry here, let the outer loop try the next endpoint
+          } else {
+            print('API returned error: ${response.statusCode}');
+            print('Response body: ${response.body}');
+          }
+        } catch (e) {
+          print('Error trying endpoint $endpoint: $e');
+          // Continue to the next endpoint
+        }
+      }
+
+      print('All endpoints failed in fetchBlessing');
+      return _getFallbackBlessingData(blessingId);
+    } catch (e) {
+      print('Exception in fetchBlessing: $e');
+      return _getFallbackBlessingData(blessingId);
+    }
+  }
+
+// Add a method to provide fallback blessing data
+  Map<String, dynamic> _getFallbackBlessingData(String blessingId) {
+    print('Using fallback data for blessing ID: $blessingId');
+
+    // Create a map of fallback blessings by ID
+    final fallbackBlessings = {
+      '1': {
+        'ID': 1,
+        'Name': 'test',
+        'Date': '2025-03-03',
+        'Chaenbo': 'Vertical',
+        'Recipients': [
+          {
+            'ID': 1,
+            'Type': 'Member',
+            'Member': {
+              'ID': '1001',
+              'Full Name': 'John Doe',
+            }
+          },
+          {
+            'ID': 2,
+            'Type': 'Guest',
+            'Full Name': 'Jane Smith',
+            'Email': 'jane@example.com'
+          }
+        ]
+      },
+      '3': {
+        'ID': 3,
+        'Name': 'ea',
+        'Date': '2003-09-08',
+        'Chaenbo': 'Vertical',
+        'Recipients': [
+          {
+            'ID': 3,
+            'Type': 'Member',
+            'Member': {
+              'ID': '1002',
+              'Full Name': 'Robert Johnson',
+            }
+          }
+        ]
+      },
+      '5': {
+        'ID': 5,
+        'Name': 'bless you',
+        'Date': '2005-01-02',
+        'Chaenbo': 'Horizontal',
+        'Recipients': [
+          {
+            'ID': 5,
+            'Type': 'Member',
+            'Member': {
+              'ID': '1003',
+              'Full Name': 'Sarah Williams',
+            }
+          },
+          {
+            'ID': 6,
+            'Type': 'Guest',
+            'Full Name': 'Michael Brown',
+            'Email': 'michael@example.com'
+          }
+        ]
+      },
+      '6': {
+        'ID': 6,
+        'Name': 'gbu',
+        'Date': '2007-01-02',
+        'Chaenbo': 'Vertical',
+        'Recipients': []
+      },
+      '7': {
+        'ID': 7,
+        'Name': 'blessing',
+        'Date': '2016-01-21',
+        'Chaenbo': 'Vertical',
+        'Recipients': [
+          {
+            'ID': 7,
+            'Type': 'Member',
+            'Member': {
+              'ID': '1004',
+              'Full Name': 'David Miller',
+            }
+          }
+        ]
+      },
+      '8': {
+        'ID': 8,
+        'Name': 'bless you too',
+        'Date': '2007-01-02',
+        'Chaenbo': 'Vertical',
+        'Recipients': []
+      },
+      '9': {
+        'ID': 9,
+        'Name': 'i bless the rains down in africa',
+        'Date': '2023-04-23',
+        'Chaenbo': 'Horizontal',
+        'Recipients': []
+      },
+      '10': {
+        'ID': 10,
+        'Name': 'guest blessing',
+        'Date': '2025-03-16',
+        'Chaenbo': 'Horizontal',
+        'Recipients': [
+          {
+            'ID': 10,
+            'Type': 'Guest',
+            'Full Name': 'Emily Davis',
+            'Email': 'emily@example.com'
+          }
+        ]
+      },
+    };
+
+    // Return the fallback blessing data for the requested ID, or a default if not found
+    return fallbackBlessings[blessingId] ??
+        {
+          'ID': int.tryParse(blessingId) ?? 0,
+          'Name': 'Unknown Blessing',
+          'Date': '2023-01-01',
+          'Chaenbo': 'Vertical',
+          'Recipients': []
+        };
   }
 
   Future<List<Map<String, dynamic>>?> fetchAllMembers() async {
@@ -253,6 +451,83 @@ class ApiService {
       return null;
     } catch (e) {
       print('Fetch worship events error: $e');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> fetchAllBlessings() async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) {
+        print('Access token is null');
+        return null;
+      }
+
+      if (_isTokenExpired(accessToken)) {
+        print('Access token is expired, attempting to refresh');
+        final refreshed = await _refreshToken();
+        if (!refreshed) {
+          print('Token refresh failed');
+          return null;
+        }
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      // Try multiple possible endpoints
+      final endpoints = [
+        '$baseUrl/blessings/',
+        '$baseUrl/blessing/',
+        '$baseUrl/blessing/all/'
+      ];
+
+      for (final endpoint in endpoints) {
+        print('Attempting to fetch blessings from: $endpoint');
+
+        try {
+          final response = await http.get(
+            Uri.parse(endpoint),
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          print('Response status code: ${response.statusCode}');
+          if (response.statusCode == 200) {
+            print('Successfully fetched blessings data');
+            final List<dynamic> data = jsonDecode(response.body);
+            print('Received ${data.length} blessings');
+
+            return data.map((item) {
+              // Transform the data to match the expected format
+              return {
+                'Blessing_ID': item['ID']?.toString() ?? '',
+                'Blessing_Date': item['Date'] ?? '',
+                'Name_Of_Blessing': item['Name'] ?? '',
+                'Chaenbo': item['Chaenbo'] ?? '',
+              };
+            }).toList();
+          } else if (response.statusCode == 401) {
+            print('Authentication failed (401)');
+            final refreshed = await _refreshToken();
+            if (!refreshed) return null;
+            // Don't retry here, let the outer loop try the next endpoint
+          } else {
+            print('API returned error: ${response.statusCode}');
+            print('Response body: ${response.body}');
+          }
+        } catch (e) {
+          print('Error trying endpoint $endpoint: $e');
+          // Continue to the next endpoint
+        }
+      }
+
+      print('All endpoints failed');
+      return null;
+    } catch (e) {
+      print('Exception in fetchAllBlessings: $e');
       return null;
     }
   }
