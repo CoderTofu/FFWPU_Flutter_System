@@ -1,3 +1,4 @@
+import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:ffwpu_flutter_view/pages/blessings_page.dart';
 import 'package:ffwpu_flutter_view/pages/donations_page.dart';
 import 'package:ffwpu_flutter_view/pages/login_page.dart';
@@ -6,8 +7,39 @@ import 'package:ffwpu_flutter_view/pages/reporting_page.dart';
 import 'package:ffwpu_flutter_view/pages/worship_page.dart';
 import 'package:flutter/material.dart';
 
-class EndDrawer extends StatelessWidget {
+class EndDrawer extends StatefulWidget {
   const EndDrawer({super.key});
+
+  @override
+  State<EndDrawer> createState() => _EndDrawerState();
+}
+
+class _EndDrawerState extends State<EndDrawer> {
+  final _apiService = ApiService();
+  String _username = "Administrator";
+  String _email = "user@example.com";
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserInfo();
+  }
+
+  Future<void> _fetchUserInfo() async {
+    try {
+      final userData = await _apiService.fetchUserInfo();
+      if (userData != null) {
+        setState(() {
+          _username = userData['username'] ?? "Administrator";
+          _email = userData['email'] ?? "user@example.com";
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching user info: $e');
+    }
+  }
 
   void _navigateTo(BuildContext context, Widget page) {
     Navigator.pop(context);
@@ -31,15 +63,15 @@ class EndDrawer extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Icon(Icons.account_circle, size: 50, color: Colors.white),
-                SizedBox(height: 10),
+              children: [
+                const Icon(Icons.account_circle, size: 50, color: Colors.white),
+                const SizedBox(height: 10),
                 Text(
-                  "User Name",
+                  _username,
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
                 Text(
-                  "user@example.com",
+                  _email,
                   style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
               ],
