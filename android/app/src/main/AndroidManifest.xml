@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="ffwpu_flutter_view"
+        android:label="FFWPU"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
