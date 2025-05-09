@@ -22,6 +22,16 @@ class _ReportingPageState extends State<ReportingPage> {
   final List<String> _currencies = ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY'];
   final List<String> _periods = ['Week', 'Month', 'Year'];
 
+  // Currency symbol mapping
+  Map<String, String> _currencySymbols = {
+    'USD': '\$',
+    'PHP': '₱',
+    'EUR': '€',
+    'JPY': '¥',
+    'KRW': '₩',
+    'CNY': 'CN¥',
+  };
+
   // Data from API
   double _totalDonation = 0.0;
   double _averageDonation = 0.0;
@@ -210,7 +220,7 @@ class _ReportingPageState extends State<ReportingPage> {
         barRods: [
           BarChartRodData(
             toY: timeSeriesData[index]['amount'].toDouble(),
-            color: const Color.fromRGBO(1, 118, 178, 1),
+            color: const Color.fromRGBO(28, 92, 168, 1),
             width: 16,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
@@ -253,13 +263,17 @@ class _ReportingPageState extends State<ReportingPage> {
         items: items.map((String item) {
           return DropdownMenuItem<String>(
             value: item,
-            child: Text(item),
+            child: Text(
+              item == value && label == 'Currency'
+                  ? '${_currencySymbols[item]} $item'
+                  : item,
+            ),
           );
         }).toList(),
         onChanged: onChanged,
         underline: Container(),
         style: const TextStyle(
-          color: Color.fromRGBO(1, 118, 178, 1),
+          color: Color.fromRGBO(28, 92, 168, 1),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -302,7 +316,7 @@ class _ReportingPageState extends State<ReportingPage> {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(1, 118, 178, 1),
+              color: Color.fromRGBO(28, 92, 168, 1),
             ),
           ),
         ],
@@ -310,17 +324,35 @@ class _ReportingPageState extends State<ReportingPage> {
     );
   }
 
+  // Updated to match the React component's x-axis labels
   String _getXAxisLabel(int value) {
     switch (_selectedPeriod) {
       case 'Week':
-        final now = DateTime.now();
-        final date = now.subtract(Duration(days: (3 - value) * 7));
-        return DateFormat('MMM d').format(date);
+        // Match React component's "Week 1", "Week 2", etc. format
+        return 'Week ${value + 1}';
       case 'Year':
+        // For yearly data, use the actual year from the data
+        if (_timeSeriesYearly.isNotEmpty && value < _timeSeriesYearly.length) {
+          final sortedData = [..._timeSeriesYearly]
+            ..sort((a, b) => a['date'].compareTo(b['date']));
+          final date = DateTime.parse(sortedData[value]['date']);
+          return date.year.toString();
+        }
+        // Fallback if data is not available
         final now = DateTime.now();
         return (now.year - (4 - value)).toString();
       case 'Month':
       default:
+        // For monthly data, use the month abbreviation from the data
+        if (_timeSeriesMonthly.isNotEmpty &&
+            value < _timeSeriesMonthly.length) {
+          final sortedData = [..._timeSeriesMonthly]
+            ..sort((a, b) => a['date'].compareTo(b['date']));
+          final date = DateTime.parse(sortedData[value]['date']);
+          return DateFormat('MMM')
+              .format(date); // Short month name (Jan, Feb, etc.)
+        }
+        // Fallback if data is not available
         const months = [
           'Jan',
           'Feb',
@@ -441,88 +473,130 @@ class _ReportingPageState extends State<ReportingPage> {
                                     ),
                                   ],
                                 ),
-                                child: BarChart(
-                                  BarChartData(
-                                    alignment: BarChartAlignment.spaceAround,
-                                    maxY: _getBarGroups().isEmpty ? 1000 : null,
-                                    barTouchData: BarTouchData(
-                                      enabled: true,
-                                      touchTooltipData: BarTouchTooltipData(
-                                        tooltipBgColor: const Color.fromRGBO(
-                                            1, 118, 178, 1),
-                                        getTooltipItem:
-                                            (group, groupIndex, rod, rodIndex) {
-                                          return BarTooltipItem(
-                                            '${_selectedCurrency} ${rod.toY.toStringAsFixed(2)}',
-                                            const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Add SUM Amount label like in React component
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16),
+                                      child: Text(
+                                        'SUM Amount (${_selectedCurrency})',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[500],
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: BarChart(
+                                        BarChartData(
+                                          alignment:
+                                              BarChartAlignment.spaceAround,
+                                          maxY: _getBarGroups().isEmpty
+                                              ? 1000
+                                              : null,
+                                          barTouchData: BarTouchData(
+                                            enabled: true,
+                                            touchTooltipData:
+                                                BarTouchTooltipData(
+                                              tooltipBgColor:
+                                                  const Color.fromRGBO(
+                                                      28, 92, 168, 1),
+                                              getTooltipItem: (group,
+                                                  groupIndex, rod, rodIndex) {
+                                                return BarTooltipItem(
+                                                  '${_currencySymbols[_selectedCurrency]} ${rod.toY.toStringAsFixed(2)}',
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    titlesData: FlTitlesData(
-                                      show: true,
-                                      bottomTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          getTitlesWidget: (value, meta) {
-                                            if (value >= 0 &&
-                                                value <
-                                                    _getBarGroups().length) {
-                                              return Text(
-                                                _getXAxisLabel(value.toInt()),
-                                                style: const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              );
-                                            }
-                                            return const Text('');
-                                          },
-                                        ),
-                                      ),
-                                      leftTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          getTitlesWidget: (value, meta) {
-                                            return Text(
-                                              '${_selectedCurrency} ${value.toInt()}',
-                                              style: const TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
+                                          ),
+                                          titlesData: FlTitlesData(
+                                            show: true,
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (value, meta) {
+                                                  if (value >= 0 &&
+                                                      value <
+                                                          _getBarGroups()
+                                                              .length) {
+                                                    return Text(
+                                                      _getXAxisLabel(
+                                                          value.toInt()),
+                                                      style: const TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    );
+                                                  }
+                                                  return const Text('');
+                                                },
                                               ),
-                                            );
-                                          },
-                                          reservedSize: 40,
+                                            ),
+                                            leftTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (value, meta) {
+                                                  // Format currency values like in React component
+                                                  String formattedValue;
+                                                  if (_selectedCurrency ==
+                                                          'JPY' ||
+                                                      _selectedCurrency ==
+                                                          'KRW') {
+                                                    formattedValue = value
+                                                        .toInt()
+                                                        .toString();
+                                                  } else {
+                                                    formattedValue = value
+                                                        .toInt()
+                                                        .toString();
+                                                  }
+                                                  return Text(
+                                                    '${_currencySymbols[_selectedCurrency]} $formattedValue',
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  );
+                                                },
+                                                reservedSize: 60,
+                                              ),
+                                            ),
+                                            topTitles: const AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: false),
+                                            ),
+                                            rightTitles: const AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: false),
+                                            ),
+                                          ),
+                                          gridData: FlGridData(
+                                            show: true,
+                                            drawVerticalLine: false,
+                                            horizontalInterval: 2000,
+                                            getDrawingHorizontalLine: (value) {
+                                              return FlLine(
+                                                color: Colors.grey[200],
+                                                strokeWidth: 1,
+                                              );
+                                            },
+                                          ),
+                                          borderData: FlBorderData(show: false),
+                                          barGroups: _getBarGroups(),
                                         ),
                                       ),
-                                      topTitles: const AxisTitles(
-                                        sideTitles:
-                                            SideTitles(showTitles: false),
-                                      ),
-                                      rightTitles: const AxisTitles(
-                                        sideTitles:
-                                            SideTitles(showTitles: false),
-                                      ),
                                     ),
-                                    gridData: FlGridData(
-                                      show: true,
-                                      drawVerticalLine: false,
-                                      horizontalInterval: 2000,
-                                      getDrawingHorizontalLine: (value) {
-                                        return FlLine(
-                                          color: Colors.grey[200],
-                                          strokeWidth: 1,
-                                        );
-                                      },
-                                    ),
-                                    borderData: FlBorderData(show: false),
-                                    barGroups: _getBarGroups(),
-                                  ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -531,29 +605,45 @@ class _ReportingPageState extends State<ReportingPage> {
 
                         const SizedBox(height: 16),
 
-                        // Currency Selection
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Select currency:',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromRGBO(1, 118, 178, 1),
+                        // Currency Selection - Wrapped in a Card
+                        Container(
+                          width: double.infinity,
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.06),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
-                            _buildFilterDropdown(
-                              _selectedCurrency,
-                              _currencies,
-                              'Currency',
-                              (value) {
-                                if (value != null) {
-                                  setState(() => _selectedCurrency = value);
-                                }
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Select currency:',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromRGBO(28, 92, 168, 1),
+                                ),
+                              ),
+                              _buildFilterDropdown(
+                                _selectedCurrency,
+                                _currencies,
+                                'Currency',
+                                (value) {
+                                  if (value != null) {
+                                    setState(() => _selectedCurrency = value);
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
 
                         const SizedBox(height: 16),
@@ -565,14 +655,14 @@ class _ReportingPageState extends State<ReportingPage> {
                             Expanded(
                               child: _buildStatCard(
                                 'TOTAL DONATION',
-                                '$_selectedCurrency ${_totalDonation.toStringAsFixed(2)}',
+                                '${_currencySymbols[_selectedCurrency]} ${_totalDonation.toStringAsFixed(2)}',
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: _buildStatCard(
                                 'AVERAGE DONATION',
-                                '$_selectedCurrency ${_averageDonation.toStringAsFixed(2)}',
+                                '${_currencySymbols[_selectedCurrency]} ${_averageDonation.toStringAsFixed(2)}',
                               ),
                             ),
                           ],
@@ -608,7 +698,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                       ),
                                       decoration: BoxDecoration(
                                         color:
-                                            const Color.fromRGBO(1, 118, 178, 1)
+                                            const Color.fromRGBO(28, 92, 168, 1)
                                                 .withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
@@ -618,7 +708,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                             Icons.star_rounded,
                                             size: 20,
                                             color:
-                                                Color.fromRGBO(1, 118, 178, 1),
+                                                Color.fromRGBO(28, 92, 168, 1),
                                           ),
                                           SizedBox(width: 8),
                                           Text(
@@ -627,7 +717,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               color: Color.fromRGBO(
-                                                  1, 118, 178, 1),
+                                                  28, 92, 168, 1),
                                               letterSpacing: 0.5,
                                             ),
                                           ),
@@ -672,7 +762,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                                 height: 32,
                                                 decoration: BoxDecoration(
                                                   color: const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       .withOpacity(0.1),
                                                   borderRadius:
                                                       BorderRadius.circular(8),
@@ -685,7 +775,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Color.fromRGBO(
-                                                          1, 118, 178, 1),
+                                                          28, 92, 168, 1),
                                                     ),
                                                   ),
                                                 ),
@@ -716,18 +806,18 @@ class _ReportingPageState extends State<ReportingPage> {
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: const Color.fromRGBO(
-                                                          1, 118, 178, 1)
+                                                          28, 92, 168, 1)
                                                       .withOpacity(0.1),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
                                                 child: Text(
-                                                  '$_selectedCurrency ${donor['amount']?.toStringAsFixed(2) ?? '0.00'}',
+                                                  '${_currencySymbols[_selectedCurrency]} ${donor['amount']?.toStringAsFixed(2) ?? '0.00'}',
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color.fromRGBO(
-                                                        1, 118, 178, 1),
+                                                        28, 92, 168, 1),
                                                   ),
                                                 ),
                                               ),

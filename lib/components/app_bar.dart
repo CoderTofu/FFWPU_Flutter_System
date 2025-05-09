@@ -16,7 +16,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      elevation: 0, // optional: disable shadow if you only want the line
       automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -40,7 +39,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(4.0),
         child: Container(
-          color: Color.fromRGBO(0, 0, 0, 0.25),
+          color: Color.fromRGBO(0, 0, 0, 0.10),
           height: 4.0,
         ),
       ),
