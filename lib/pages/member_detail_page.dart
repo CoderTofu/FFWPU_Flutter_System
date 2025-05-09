@@ -404,6 +404,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                           ],
                                         ),
 
+                                        // In the Spiritual Tab section, replace the Blessings list part with this:
                                         const SizedBox(height: 20),
                                         Text(
                                           'Blessings',
@@ -415,84 +416,119 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                         ),
                                         const SizedBox(height: 8),
 
-                                        // Blessings list
-                                        ...userBlessings
-                                            .map((blessing) => Container(
-                                                  margin: const EdgeInsets.only(
-                                                      bottom: 8),
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[100],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.emoji_events,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        size: 20,
+                                        // Blessings list or "No blessings yet" message
+                                        userBlessings.isEmpty
+                                            ? Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 8),
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.info_outline,
+                                                      color: Colors.grey[600],
+                                                      size: 20,
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    Text(
+                                                      'No blessings yet',
+                                                      style: TextStyle(
+                                                        color: Colors.grey[600],
+                                                        fontStyle:
+                                                            FontStyle.italic,
                                                       ),
-                                                      const SizedBox(width: 12),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              blessing[
-                                                                      'name'] ??
-                                                                  'Unknown Blessing',
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Column(
+                                                children: userBlessings
+                                                    .map(
+                                                        (blessing) => Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          8),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .grey[100],
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 2),
-                                                            Row(
-                                                              children: [
-                                                                const Icon(
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(
                                                                     Icons
-                                                                        .calendar_today,
-                                                                    size: 12,
-                                                                    color: Colors
-                                                                        .grey),
-                                                                const SizedBox(
-                                                                    width: 4),
-                                                                Text(
-                                                                  blessing[
-                                                                          'date'] ??
-                                                                      'Unknown Date',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                            .grey[
-                                                                        600],
+                                                                        .emoji_events,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor,
+                                                                    size: 20,
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ))
-                                            .toList(),
+                                                                  const SizedBox(
+                                                                      width:
+                                                                          12),
+                                                                  Expanded(
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          blessing['name'] ??
+                                                                              'Unknown Blessing',
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                2),
+                                                                        Row(
+                                                                          children: [
+                                                                            const Icon(Icons.calendar_today,
+                                                                                size: 12,
+                                                                                color: Colors.grey),
+                                                                            const SizedBox(width: 4),
+                                                                            Text(
+                                                                              blessing['date'] ?? 'Unknown Date',
+                                                                              style: TextStyle(
+                                                                                fontSize: 14,
+                                                                                color: Colors.grey[600],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ))
+                                                    .toList(),
+                                              ),
                                       ],
                                     ),
                                   ),
 
                                   // History Tab - Now with dummy mission history data
+                                  // In the History Tab section, replace the mission history part with this:
                                   SingleChildScrollView(
                                     child: Column(
                                         crossAxisAlignment:
@@ -507,18 +543,59 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                             ),
                                           ),
                                           const SizedBox(height: 12),
-                                          ...userHistory.map((history) =>
-                                              _buildMissionHistoryItem(
-                                                role: history['role'] ??
-                                                    'Unknown',
-                                                organization:
-                                                    history['organization'] ??
-                                                        'Unknown',
-                                                country: history['country'] ??
-                                                    'Unknown',
-                                                date: history['start_date'] ??
-                                                    'Unknown',
-                                              )),
+
+                                          // Show "No mission history" message if the list is empty
+                                          userHistory.isEmpty
+                                              ? Container(
+                                                  margin: const EdgeInsets.only(
+                                                      bottom: 8),
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.info_outline,
+                                                        color: Colors.grey[600],
+                                                        size: 20,
+                                                      ),
+                                                      const SizedBox(width: 12),
+                                                      Text(
+                                                        'No mission history',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Colors.grey[600],
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Column(
+                                                  children: userHistory
+                                                      .map((history) =>
+                                                          _buildMissionHistoryItem(
+                                                            role: history[
+                                                                    'role'] ??
+                                                                'Unknown',
+                                                            organization: history[
+                                                                    'organization'] ??
+                                                                'Unknown',
+                                                            country: history[
+                                                                    'country'] ??
+                                                                'Unknown',
+                                                            date: history[
+                                                                    'start_date'] ??
+                                                                'Unknown',
+                                                          ))
+                                                      .toList(),
+                                                ),
                                         ]),
                                   ),
                                 ],

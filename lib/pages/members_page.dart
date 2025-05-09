@@ -143,7 +143,7 @@ class _MembersPageState extends State<MembersPage> {
         options: ['Male', 'Female'],
       ),
       FilterOption(
-        label: 'Region',
+        label: 'member[\'Region\']?[\'name\']',
         field: 'Region',
         options: ['Asia Pacific', 'East Asia', 'North America', 'Europe'],
       ),
