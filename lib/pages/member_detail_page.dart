@@ -123,16 +123,39 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                                       backgroundColor: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(0.1),
-                                      child: Text(
-                                        userData['Full Name'] != null
-                                            ? userData['Full Name']
-                                                .substring(0, 1)
-                                            : 'U',
-                                        style: TextStyle(
-                                          fontSize: 36,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
+                                      child: userData['Image'] != null &&
+                                              userData['Image'].isNotEmpty
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                userData['Image'],
+                                                width: 96,
+                                                height: 96,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Text(
+                                                    userData['Full Name']
+                                                            ?.substring(0, 1) ??
+                                                        'U',
+                                                    style: TextStyle(
+                                                      fontSize: 36,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          : Text(
+                                              userData['Full Name']
+                                                      ?.substring(0, 1) ??
+                                                  'U',
+                                              style: TextStyle(
+                                                fontSize: 36,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                   const SizedBox(height: 16),
