@@ -217,28 +217,46 @@ class _ReportingPageState extends State<ReportingPage> {
   }
 
   List<BarChartGroupData> _getBarGroups() {
+    final now = DateTime.now();
     List<Map<String, dynamic>> timeSeriesData;
+    List<Map<String, dynamic>> filtered = [];
 
     // Select the appropriate time series data based on the selected period
     switch (_selectedPeriod) {
       case 'Week':
-        timeSeriesData = _timeSeriesWeekly;
+        // Last 28 days
+        final windowStart = now.subtract(const Duration(days: 28));
+        filtered = _timeSeriesWeekly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
         break;
       case 'Year':
-        timeSeriesData = _timeSeriesYearly;
+        // All-time
+        filtered = _timeSeriesYearly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
         break;
       case 'Month':
-      default:
-        timeSeriesData = _timeSeriesMonthly;
+        // Last 12 months
+        final windowStart = DateTime(now.year, now.month - 11, 1);
+        filtered = _timeSeriesMonthly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
         break;
     }
 
     // Sort data by date
-    timeSeriesData.sort((a, b) => a['date'].compareTo(b['date']));
+    // Sort filtered data by date
+    filtered.sort((a, b) => a['date'].compareTo(b['date']));
 
-    // Get the maximum value for scaling
+    // Get the maximum value for scaling (after currency conversion)
     double maxY = 0;
-    for (var item in timeSeriesData) {
+    for (var item in filtered) {
       final convertedAmount = _convertCurrency(
         item['amount'].toDouble(),
         'USD',
@@ -250,9 +268,9 @@ class _ReportingPageState extends State<ReportingPage> {
     }
 
     // Generate bar chart groups
-    return List.generate(timeSeriesData.length, (index) {
+    return List.generate(filtered.length, (index) {
       final convertedAmount = _convertCurrency(
-        timeSeriesData[index]['amount'].toDouble(),
+        filtered[index]['amount'].toDouble(),
         'USD',
         _selectedCurrency,
       );
@@ -367,6 +385,51 @@ class _ReportingPageState extends State<ReportingPage> {
     );
   }
 
+  double _getFilteredTotal() {
+    final now = DateTime.now();
+    List<Map<String, dynamic>> filtered = [];
+
+    switch (_selectedPeriod) {
+      case 'Week':
+        // Last 28 days
+        final windowStart = now.subtract(const Duration(days: 28));
+        filtered = _timeSeriesWeekly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+        break;
+
+      case 'Month':
+        // Last 12 months
+        final windowStart = DateTime(now.year, now.month - 11, 1);
+        filtered = _timeSeriesMonthly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+        break;
+
+      case 'Year':
+        // All-time
+        filtered = _timeSeriesYearly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+        break;
+    }
+    final totalUSD = filtered.fold<double>(
+        0, (sum, item) => sum + (item['amount']?.toDouble() ?? 0.0));
+
+    return totalUSD;
+  }
+
+  double _getFilteredAverage() {
+    final total = _getFilteredTotal();
+    final count = _getTopDonors().length;
+    return count > 0 ? total / count : 0.0;
+  }
+
   // Updated to match the React component's x-axis labels
   String _getXAxisLabel(int value) {
     switch (_selectedPeriod) {
@@ -429,6 +492,9 @@ class _ReportingPageState extends State<ReportingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredTotal = _getFilteredTotal();
+    final filteredAverage = _getFilteredAverage();
+
     return Scaffold(
       appBar: CustomAppBar(title: "REPORTING"),
       endDrawer: EndDrawer(),
@@ -710,12 +776,12 @@ class _ReportingPageState extends State<ReportingPage> {
                           children: [
                             Expanded(
                               child: _buildStatCard(
-                                  'TOTAL DONATION', _totalDonation),
+                                  'TOTAL DONATION', filteredTotal),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: _buildStatCard(
-                                  'AVERAGE DONATION', _averageDonation),
+                                  'AVERAGE DONATION', filteredAverage),
                             ),
                           ],
                         ),
