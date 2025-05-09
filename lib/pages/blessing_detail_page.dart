@@ -130,7 +130,7 @@ class _ViewBlessingPageState extends State<ViewBlessingPage> {
     return Scaffold(
       appBar: CustomAppBar(title: "VIEW BLESSING"),
       endDrawer: EndDrawer(),
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color.fromRGBO(248, 250, 252, 1),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage != null

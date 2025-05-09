@@ -65,14 +65,14 @@ class _WorshipPageState extends State<WorshipPage> {
       TableColumn(
         key: 'ID',
         header: 'ID',
-        width: 120,
+        width: 80,
         textAlign: TextAlign.left,
         isSortable: true,
       ),
       TableColumn(
         key: 'Event Name',
         header: 'Event Name',
-        width: 300,
+        width: 150,
         textAlign: TextAlign.left,
         isSortable: true,
       ),

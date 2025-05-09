@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:ffwpu_flutter_view/components/app_bar.dart';
+import 'package:ffwpu_flutter_view/components/data_table.dart';
+import 'package:ffwpu_flutter_view/components/table_config.dart';
 
 class ViewWorshipEvent extends StatefulWidget {
   final String eventId;
@@ -135,9 +137,29 @@ class _ViewWorshipEventState extends State<ViewWorshipEvent> {
                                     ),
                                   ],
                                 ),
-                                child: AnotherTable(
+                                child: CustomTable(
                                   data: attendees,
-                                  columns: ['Full Name'],
+                                  config: TableConfig(
+                                    columns: [
+                                      TableColumn(
+                                        key: 'ID',
+                                        header: 'ID',
+                                        width: 100,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      TableColumn(
+                                        key: 'Full Name',
+                                        header: 'Full Name',
+                                        width: 200,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                    responsiveColumns: {
+                                      'lg': ['ID', 'Full Name'],
+                                      'md': ['ID', 'Full Name'],
+                                      'sm': ['Full Name'],
+                                    },
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -163,9 +185,29 @@ class _ViewWorshipEventState extends State<ViewWorshipEvent> {
                                     ),
                                   ],
                                 ),
-                                child: AnotherTable(
+                                child: CustomTable(
                                   data: guests,
-                                  columns: ['Full Name'],
+                                  config: TableConfig(
+                                    columns: [
+                                      TableColumn(
+                                        key: 'ID',
+                                        header: 'ID',
+                                        width: 100,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      TableColumn(
+                                        key: 'Full Name',
+                                        header: 'Full Name',
+                                        width: 200,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                    responsiveColumns: {
+                                      'lg': ['ID', 'Full Name'],
+                                      'md': ['ID', 'Full Name'],
+                                      'sm': ['Full Name'],
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -275,105 +317,6 @@ class _ViewWorshipEventState extends State<ViewWorshipEvent> {
                     ),
                   ),
                 ),
-    );
-  }
-}
-
-class AnotherTable extends StatefulWidget {
-  final List<Map<String, dynamic>> data;
-  final List<String> columns;
-  final Function(Map<String, dynamic>)? onRowSelect;
-  final Function(Map<String, dynamic>)? onRowDoubleTap;
-  final String? idName;
-
-  const AnotherTable({
-    Key? key,
-    required this.data,
-    required this.columns,
-    this.onRowSelect,
-    this.onRowDoubleTap,
-    this.idName,
-  }) : super(key: key);
-
-  @override
-  State<AnotherTable> createState() => _AnotherTableState();
-}
-
-class _AnotherTableState extends State<AnotherTable> {
-  int? selectedRowIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Table Header
-        Container(
-          color: const Color(0xFF1C5CA8),
-          child: Row(
-            children: widget.columns.map((header) {
-              return Expanded(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                  child: Text(
-                    header,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-
-        // Table Body
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.data.length,
-            itemBuilder: (context, index) {
-              final row = widget.data[index];
-              final isSelected = selectedRowIndex == index;
-
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedRowIndex = index;
-                  });
-                  if (widget.onRowSelect != null) {
-                    widget.onRowSelect!(row);
-                  }
-                },
-                onDoubleTap: () {
-                  if (widget.onRowDoubleTap != null && widget.idName != null) {
-                    widget.onRowDoubleTap!(row);
-                  }
-                },
-                child: Container(
-                  color: isSelected ? const Color(0xFFE7E6E6) : Colors.white,
-                  child: Row(
-                    children: widget.columns.map((header) {
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 8),
-                          child: Text(
-                            row[header]?.toString() ?? '-',
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
     );
   }
 }

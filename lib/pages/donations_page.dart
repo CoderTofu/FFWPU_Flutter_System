@@ -28,7 +28,7 @@ class _DonationsPageState extends State<DonationsPage> {
       TableColumn(
         key: 'Donation_ID',
         header: 'Donation ID',
-        width: 100,
+        width: 80,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
@@ -42,7 +42,7 @@ class _DonationsPageState extends State<DonationsPage> {
       TableColumn(
         key: 'Full_Name',
         header: 'Full Name',
-        width: 200,
+        width: 150,
         isSortable: true,
       ),
       TableColumn(
@@ -103,7 +103,7 @@ class _DonationsPageState extends State<DonationsPage> {
       FilterOption(
         label: 'Currency',
         field: 'Currency',
-        options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY', 'GBP'],
+        options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY'],
       ),
     ],
     headerColor: const Color.fromRGBO(28, 92, 168, 1),

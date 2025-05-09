@@ -43,7 +43,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
       TableColumn(
         key: 'Name_Of_Blessing',
         header: 'Name Of Blessing',
-        width: 300,
+        width: 150,
         textAlign: TextAlign.left,
         isSortable: true,
       ),
