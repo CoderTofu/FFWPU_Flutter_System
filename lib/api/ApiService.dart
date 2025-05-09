@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ApiService {
   static const String baseUrl =
-      'http://192.168.0.21:8000/api'; // Replace with your API base URL
+      'http://192.168.1.11:8000/api'; // Replace with your API base URL
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
 
@@ -85,6 +85,7 @@ class ApiService {
           'password': password,
         }),
       );
+      print(response);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         await _saveTokens(data['access'], data['refresh']);
@@ -526,6 +527,7 @@ class ApiService {
           if (response.statusCode == 200) {
             print('Successfully fetched donation statistics');
             final data = jsonDecode(response.body);
+            print(data);
             return data;
           } else if (response.statusCode == 401) {
             print('Authentication failed (401) in fetchDonationStatistics');

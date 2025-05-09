@@ -42,10 +42,41 @@ class _ReportingPageState extends State<ReportingPage> {
   List<Map<String, dynamic>> _timeSeriesWeekly = [];
   List<Map<String, dynamic>> _timeSeriesYearly = [];
 
+  final Map<String, double> _conversionRates = {
+    'USD': 1,
+    'PHP': 55.6,
+    'EUR': 0.93,
+    'JPY': 145.3,
+    'KRW': 1310.4,
+    'CNY': 7.15,
+  };
+
   @override
   void initState() {
     super.initState();
     _fetchDonationStatistics();
+  }
+
+  double _convertCurrency(
+      double amount, String fromCurrency, String toCurrency) {
+    // First convert to USD (base currency)
+    double amountInUSD = amount / _conversionRates[fromCurrency]!;
+    // Then convert to target currency
+    return amountInUSD * _conversionRates[toCurrency]!;
+  }
+
+  String _formatAmount(double amount) {
+    final numberFormat = NumberFormat();
+
+    if (_selectedCurrency == 'JPY' || _selectedCurrency == 'KRW') {
+      // For JPY and KRW, round to whole numbers and add commas
+      return numberFormat.format(amount.round());
+    } else {
+      // For other currencies, keep 2 decimal places and add commas
+      numberFormat.minimumFractionDigits = 2;
+      numberFormat.maximumFractionDigits = 2;
+      return numberFormat.format(amount);
+    }
   }
 
   Future<void> _fetchDonationStatistics() async {
@@ -208,18 +239,29 @@ class _ReportingPageState extends State<ReportingPage> {
     // Get the maximum value for scaling
     double maxY = 0;
     for (var item in timeSeriesData) {
-      if (item['amount'] > maxY) {
-        maxY = item['amount'];
+      final convertedAmount = _convertCurrency(
+        item['amount'].toDouble(),
+        'USD',
+        _selectedCurrency,
+      );
+      if (convertedAmount > maxY) {
+        maxY = convertedAmount;
       }
     }
 
     // Generate bar chart groups
     return List.generate(timeSeriesData.length, (index) {
+      final convertedAmount = _convertCurrency(
+        timeSeriesData[index]['amount'].toDouble(),
+        'USD',
+        _selectedCurrency,
+      );
+
       return BarChartGroupData(
         x: index,
         barRods: [
           BarChartRodData(
-            toY: timeSeriesData[index]['amount'].toDouble(),
+            toY: convertedAmount,
             color: const Color.fromRGBO(28, 92, 168, 1),
             width: 16,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
@@ -281,7 +323,8 @@ class _ReportingPageState extends State<ReportingPage> {
     );
   }
 
-  Widget _buildStatCard(String title, String value) {
+  Widget _buildStatCard(String title, double amount) {
+    final convertedAmount = _convertCurrency(amount, 'USD', _selectedCurrency);
     return Container(
       width: 280,
       height: 100,
@@ -312,7 +355,7 @@ class _ReportingPageState extends State<ReportingPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            value,
+            '${_currencySymbols[_selectedCurrency]} ${_formatAmount(convertedAmount)}',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -371,6 +414,17 @@ class _ReportingPageState extends State<ReportingPage> {
         final monthIndex = (now.month - 1 - (11 - value)) % 12;
         return months[monthIndex];
     }
+  }
+
+  String _formatLargeNumber(double value) {
+    if (value >= 1000000000) {
+      return '${(value / 1000000000).toStringAsFixed(1)}B';
+    } else if (value >= 1000000) {
+      return '${(value / 1000000).toStringAsFixed(1)}M';
+    } else if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(1)}K';
+    }
+    return value.toStringAsFixed(0);
   }
 
   @override
@@ -558,8 +612,10 @@ class _ReportingPageState extends State<ReportingPage> {
                                                         .toInt()
                                                         .toString();
                                                   }
+                                                  String format =
+                                                      _formatLargeNumber(value);
                                                   return Text(
-                                                    '${_currencySymbols[_selectedCurrency]} $formattedValue',
+                                                    '${_currencySymbols[_selectedCurrency]} $format',
                                                     style: const TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 12,
@@ -654,16 +710,12 @@ class _ReportingPageState extends State<ReportingPage> {
                           children: [
                             Expanded(
                               child: _buildStatCard(
-                                'TOTAL DONATION',
-                                '${_currencySymbols[_selectedCurrency]} ${_totalDonation.toStringAsFixed(2)}',
-                              ),
+                                  'TOTAL DONATION', _totalDonation),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: _buildStatCard(
-                                'AVERAGE DONATION',
-                                '${_currencySymbols[_selectedCurrency]} ${_averageDonation.toStringAsFixed(2)}',
-                              ),
+                                  'AVERAGE DONATION', _averageDonation),
                             ),
                           ],
                         ),
@@ -742,6 +794,12 @@ class _ReportingPageState extends State<ReportingPage> {
                                       itemCount: _getTopDonors().length,
                                       itemBuilder: (context, index) {
                                         final donor = _getTopDonors()[index];
+                                        final convertedAmount =
+                                            _convertCurrency(
+                                                donor['amount']?.toDouble() ??
+                                                    0.0,
+                                                'USD',
+                                                _selectedCurrency);
                                         return Container(
                                           margin:
                                               const EdgeInsets.only(bottom: 12),
@@ -812,7 +870,7 @@ class _ReportingPageState extends State<ReportingPage> {
                                                       BorderRadius.circular(20),
                                                 ),
                                                 child: Text(
-                                                  '${_currencySymbols[_selectedCurrency]} ${donor['amount']?.toStringAsFixed(2) ?? '0.00'}',
+                                                  '${_currencySymbols[_selectedCurrency]} ${_formatAmount(convertedAmount)}',
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
