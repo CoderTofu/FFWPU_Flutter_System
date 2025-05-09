@@ -27,16 +27,9 @@ class _MembersPageState extends State<MembersPage> {
   final TableConfig _tableConfig = TableConfig(
     columns: [
       TableColumn(
-        key: 'Member_ID',
+        key: 'ID',
         header: 'Member ID',
         width: 100,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Title',
-        header: 'Title',
-        width: 80,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
@@ -81,8 +74,8 @@ class _MembersPageState extends State<MembersPage> {
         isSortable: false,
       ),
       TableColumn(
-        key: 'Country',
-        header: 'Country',
+        key: 'Nation',
+        header: 'Nation',
         width: 150,
         textAlign: TextAlign.center,
         isSortable: true,
@@ -133,14 +126,14 @@ class _MembersPageState extends State<MembersPage> {
         'Age',
         'Marital Status',
         'Address',
-        'Country',
+        'Nation',
         'Region',
         'Membership Category',
         'Generation',
         'Blessing Status',
         'Spiritual Birthday'
       ],
-      'md': ['ID', 'Full Name', 'Gender', 'Age', 'Country', 'Region'],
+      'md': ['ID', 'Full Name', 'Gender', 'Age', 'Nation', 'Region'],
       'sm': ['ID', 'Full Name', 'Gender'],
     },
     filterOptions: [
