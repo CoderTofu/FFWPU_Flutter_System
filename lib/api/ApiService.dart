@@ -483,6 +483,73 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>?> fetchDonationStatistics() async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) {
+        print('Access token is null in fetchDonationStatistics');
+        return null;
+      }
+
+      if (_isTokenExpired(accessToken)) {
+        print(
+            'Access token is expired in fetchDonationStatistics, attempting to refresh');
+        final refreshed = await _refreshToken();
+        if (!refreshed) {
+          print('Token refresh failed in fetchDonationStatistics');
+          return null;
+        }
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      // Try multiple possible endpoints
+      final endpoints = [
+        '$baseUrl/donations/statistics/',
+        '$baseUrl/donation/statistics/',
+      ];
+
+      for (final endpoint in endpoints) {
+        print('Attempting to fetch donation statistics from: $endpoint');
+
+        try {
+          final response = await http.get(
+            Uri.parse(endpoint),
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          print('Response status code: ${response.statusCode}');
+          if (response.statusCode == 200) {
+            print('Successfully fetched donation statistics');
+            final data = jsonDecode(response.body);
+            return data;
+          } else if (response.statusCode == 401) {
+            print('Authentication failed (401) in fetchDonationStatistics');
+            final refreshed = await _refreshToken();
+            if (!refreshed) return null;
+            // Don't retry here, let the outer loop try the next endpoint
+          } else {
+            print('API returned error: ${response.statusCode}');
+            print('Response body: ${response.body}');
+          }
+        } catch (e) {
+          print('Error trying endpoint $endpoint: $e');
+          // Continue to the next endpoint
+        }
+      }
+
+      print('All endpoints failed in fetchDonationStatistics');
+      return null;
+    } catch (e) {
+      print('Exception in fetchDonationStatistics: $e');
+      return null;
+    }
+  }
+
   // Modified logout to clear both tokens
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
