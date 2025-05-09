@@ -4,6 +4,7 @@ import 'package:ffwpu_flutter_view/components/end_drawer.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:ffwpu_flutter_view/api/ApiService.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 class ReportingPage extends StatefulWidget {
   const ReportingPage({super.key});
@@ -425,9 +426,60 @@ class _ReportingPageState extends State<ReportingPage> {
   }
 
   double _getFilteredAverage() {
-    final total = _getFilteredTotal();
-    final count = _getTopDonors().length;
-    return count > 0 ? total / count : 0.0;
+    final now = DateTime.now();
+    List<Map<String, dynamic>> filtered = [];
+    double avgUSD = 0;
+
+    switch (_selectedPeriod) {
+      case 'Week':
+        // Last 28 days → average per 3 weeks
+        final windowStart = now.subtract(const Duration(days: 28));
+        filtered = _timeSeriesWeekly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+
+        final total = filtered.fold<double>(
+            0, (sum, item) => sum + (item['amount']?.toDouble() ?? 0.0));
+        avgUSD = filtered.isNotEmpty ? total / 3 : 0;
+        break;
+
+      case 'Month':
+        // Last 12 months → average per 12 months
+        final windowStart = DateTime(now.year, now.month - 11, 1);
+        filtered = _timeSeriesMonthly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isAfter(windowStart.subtract(const Duration(days: 1))) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+
+        final total = filtered.fold<double>(
+            0, (sum, item) => sum + (item['amount']?.toDouble() ?? 0.0));
+        avgUSD = filtered.isNotEmpty ? total / 12 : 0;
+        break;
+
+      case 'Year':
+        // All-time → average per year-span
+        filtered = _timeSeriesYearly.where((item) {
+          final date = DateTime.parse(item['date']);
+          return date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
+
+        final total = filtered.fold<double>(
+            0, (sum, item) => sum + (item['amount']?.toDouble() ?? 0.0));
+
+        if (filtered.isNotEmpty) {
+          final minYear = filtered
+              .map((item) => DateTime.parse(item['date']).year)
+              .reduce(min);
+          final years = now.year - minYear + 1;
+          avgUSD = total / years;
+        }
+        break;
+    }
+
+    return avgUSD;
   }
 
   // Updated to match the React component's x-axis labels
