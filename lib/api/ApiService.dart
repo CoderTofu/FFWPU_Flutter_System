@@ -345,61 +345,48 @@ class ApiService {
         accessToken = (await _getTokens())['accessToken'];
       }
 
-      // Try multiple possible endpoints
-      final endpoints = [
-        '$baseUrl/blessings/',
-        '$baseUrl/blessing/',
-        '$baseUrl/blessing/all/'
-      ];
+      final endpoint = '$baseUrl/blessing/';
+      print('Attempting to fetch blessings from: $endpoint');
 
-      for (final endpoint in endpoints) {
-        print('Attempting to fetch blessings from: $endpoint');
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-        try {
-          final response = await http.get(
-            Uri.parse(endpoint),
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-              'Content-Type': 'application/json',
-            },
-          );
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Successfully fetched blessings data');
+        final List<dynamic> data = jsonDecode(response.body);
+        print('Received ${data.length} blessings');
 
-          print('Response status code: ${response.statusCode}');
-          if (response.statusCode == 200) {
-            print('Successfully fetched blessings data');
-            final List<dynamic> data = jsonDecode(response.body);
-            print('Received ${data.length} blessings');
-
-            return data.map((item) {
-              // Transform the data to match the expected format
-              return {
-                'Blessing_ID': item['ID']?.toString() ?? '',
-                'Blessing_Date': item['Date'] ?? '',
-                'Name_Of_Blessing': item['Name'] ?? '',
-                'Chaenbo': item['Chaenbo'] ?? '',
-              };
-            }).toList();
-          } else if (response.statusCode == 401) {
-            print('Authentication failed (401)');
-            final refreshed = await _refreshToken();
-            if (!refreshed) return null;
-            // Don't retry here, let the outer loop try the next endpoint
-          } else {
-            print('API returned error: ${response.statusCode}');
-            print('Response body: ${response.body}');
-          }
-        } catch (e) {
-          print('Error trying endpoint $endpoint: $e');
-          // Continue to the next endpoint
+        return data.map((item) {
+          return {
+            'Blessing_ID': item['ID']?.toString() ?? '',
+            'Blessing_Date': item['Date'] ?? '',
+            'Name_Of_Blessing': item['Name'] ?? '',
+            'Chaenbo': item['Chaenbo'] ?? '',
+          };
+        }).toList();
+      } else if (response.statusCode == 401) {
+        print('Authentication failed (401)');
+        final refreshed = await _refreshToken();
+        if (refreshed) {
+          return await fetchAllBlessings(); // Retry after refreshing token
+        } else {
+          return null;
         }
+      } else {
+        print('API returned error: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
-
-      print('All endpoints failed');
-      return null;
     } catch (e) {
       print('Exception in fetchAllBlessings: $e');
-      return null;
     }
+
+    return null;
   }
 
   Future<List<Map<String, dynamic>>?> fetchAllDonations() async {
@@ -423,65 +410,112 @@ class ApiService {
         accessToken = (await _getTokens())['accessToken'];
       }
 
-      // Try multiple possible endpoints
-      final endpoints = [
-        '$baseUrl/donations/',
-        '$baseUrl/donation/',
-        '$baseUrl/donation/all/'
-      ];
+      final endpoint = '$baseUrl/donation/';
+      print('Attempting to fetch donations from: $endpoint');
 
-      for (final endpoint in endpoints) {
-        print('Attempting to fetch donations from: $endpoint');
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-        try {
-          final response = await http.get(
-            Uri.parse(endpoint),
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-              'Content-Type': 'application/json',
-            },
-          );
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Successfully fetched donations data');
+        final List<dynamic> data = jsonDecode(response.body);
+        print('Received ${data.length} donations');
 
-          print('Response status code: ${response.statusCode}');
-          if (response.statusCode == 200) {
-            print('Successfully fetched donations data');
-            final List<dynamic> data = jsonDecode(response.body);
-            print('Received ${data.length} donations');
-
-            return data.map((item) {
-              // Transform the data to match the expected format
-              return {
-                'Donation_ID': item['ID']?.toString() ?? '',
-                'Member_ID': item['Member']?['ID']?.toString() ?? '',
-                'Full_Name': item['Member']?['Full Name'] ?? '',
-                'Date': item['Date'] ?? '',
-                'Church': item['Church']?['Name'] ?? '',
-                'Amount':
-                    double.tryParse(item['Amount']?.toString() ?? '0') ?? 0.0,
-                'Currency': item['Currency'] ?? '',
-              };
-            }).toList();
-          } else if (response.statusCode == 401) {
-            print('Authentication failed (401) in fetchAllDonations');
-            final refreshed = await _refreshToken();
-            if (!refreshed) return null;
-            // Don't retry here, let the outer loop try the next endpoint
-          } else {
-            print('API returned error: ${response.statusCode}');
-            print('Response body: ${response.body}');
-          }
-        } catch (e) {
-          print('Error trying endpoint $endpoint: $e');
-          // Continue to the next endpoint
+        return data.map((item) {
+          return {
+            'Donation_ID': item['ID']?.toString() ?? '',
+            'Member_ID': item['Member']?['ID']?.toString() ?? '',
+            'Full_Name': item['Member']?['Full Name'] ?? '',
+            'Date': item['Date'] ?? '',
+            'Church': item['Church']?['Name'] ?? '',
+            'Amount': double.tryParse(item['Amount']?.toString() ?? '0') ?? 0.0,
+            'Currency': item['Currency'] ?? '',
+          };
+        }).toList();
+      } else if (response.statusCode == 401) {
+        print('Authentication failed (401) in fetchAllDonations');
+        final refreshed = await _refreshToken();
+        if (refreshed) {
+          return await fetchAllDonations(); // Retry after refreshing token
+        } else {
+          return null;
         }
+      } else {
+        print('API returned error: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
-
-      print('All endpoints failed in fetchAllDonations');
-      return null;
     } catch (e) {
       print('Exception in fetchAllDonations: $e');
-      return null;
     }
+
+    return null;
+  }
+
+  Future<List<String>?> fetchAllChurches() async {
+    try {
+      final tokens = await _getTokens();
+      var accessToken = tokens['accessToken'];
+
+      if (accessToken == null) {
+        print('Access token is null in fetchAllChurches');
+        return null;
+      }
+
+      if (_isTokenExpired(accessToken)) {
+        print(
+            'Access token is expired in fetchAllChurches, attempting to refresh');
+        final refreshed = await _refreshToken();
+        if (!refreshed) {
+          print('Token refresh failed in fetchAllChurches');
+          return null;
+        }
+        accessToken = (await _getTokens())['accessToken'];
+      }
+
+      final endpoint = '$baseUrl/church/';
+      print('Attempting to fetch churches from: $endpoint');
+
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Successfully fetched churches data');
+        final List<dynamic> data = jsonDecode(response.body);
+        print('Received ${data.length} churches');
+
+        return data
+            .map<String>((item) => item['Name'] ?? '')
+            .where((name) => name.isNotEmpty)
+            .toList();
+      } else if (response.statusCode == 401) {
+        print('Authentication failed (401) in fetchAllChurches');
+        final refreshed = await _refreshToken();
+        if (refreshed) {
+          return await fetchAllChurches(); // Retry after refreshing token
+        } else {
+          return null;
+        }
+      } else {
+        print('API returned error: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception in fetchAllChurches: $e');
+    }
+
+    return null;
   }
 
   Future<Map<String, dynamic>?> fetchDonationStatistics() async {
@@ -505,51 +539,40 @@ class ApiService {
         accessToken = (await _getTokens())['accessToken'];
       }
 
-      // Try multiple possible endpoints
-      final endpoints = [
-        '$baseUrl/donations/statistics/',
-        '$baseUrl/donation/statistics/',
-      ];
+      final endpoint = '$baseUrl/donation/statistics/';
+      print('Attempting to fetch donation statistics from: $endpoint');
 
-      for (final endpoint in endpoints) {
-        print('Attempting to fetch donation statistics from: $endpoint');
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-        try {
-          final response = await http.get(
-            Uri.parse(endpoint),
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-              'Content-Type': 'application/json',
-            },
-          );
-
-          print('Response status code: ${response.statusCode}');
-          if (response.statusCode == 200) {
-            print('Successfully fetched donation statistics');
-            final data = jsonDecode(response.body);
-            print(data);
-            return data;
-          } else if (response.statusCode == 401) {
-            print('Authentication failed (401) in fetchDonationStatistics');
-            final refreshed = await _refreshToken();
-            if (!refreshed) return null;
-            // Don't retry here, let the outer loop try the next endpoint
-          } else {
-            print('API returned error: ${response.statusCode}');
-            print('Response body: ${response.body}');
-          }
-        } catch (e) {
-          print('Error trying endpoint $endpoint: $e');
-          // Continue to the next endpoint
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Successfully fetched donation statistics');
+        final data = jsonDecode(response.body);
+        print(data);
+        return data;
+      } else if (response.statusCode == 401) {
+        print('Authentication failed (401) in fetchDonationStatistics');
+        final refreshed = await _refreshToken();
+        if (refreshed) {
+          return await fetchDonationStatistics(); // Retry after refreshing token
+        } else {
+          return null;
         }
+      } else {
+        print('API returned error: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
-
-      print('All endpoints failed in fetchDonationStatistics');
-      return null;
     } catch (e) {
       print('Exception in fetchDonationStatistics: $e');
-      return null;
     }
+
+    return null;
   }
 
   Future<Map<String, dynamic>?> fetchUserInfo() async {

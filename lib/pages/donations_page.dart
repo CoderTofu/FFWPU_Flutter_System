@@ -23,105 +23,174 @@ class _DonationsPageState extends State<DonationsPage> {
   bool _isLoading = true;
   String? _error;
 
-  final TableConfig _tableConfig = TableConfig(
-    columns: [
-      TableColumn(
-        key: 'Donation_ID',
-        header: 'Donation ID',
-        width: 80,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Member_ID',
-        header: 'Member ID',
-        width: 100,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Full_Name',
-        header: 'Full Name',
-        width: 150,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Date',
-        header: 'Date',
-        width: 120,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Church',
-        header: 'Church',
-        width: 150,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Amount',
-        header: 'Amount',
-        width: 120,
-        textAlign: TextAlign.right,
-        isSortable: true,
-      ),
-      TableColumn(
-        key: 'Currency',
-        header: 'Currency',
-        width: 100,
-        textAlign: TextAlign.center,
-        isSortable: true,
-      ),
-    ],
-    responsiveColumns: {
-      'lg': [
-        'Donation_ID',
-        'Member_ID',
-        'Full_Name',
-        'Date',
-        'Church',
-        'Amount',
-        'Currency'
+  // Add state variables for churches and currencies
+  List<String> _churches = [];
+  bool _isLoadingChurches = true;
+  String? _churchError;
+
+  // Initialize with a basic table config, we'll update the filter options later
+  late TableConfig _tableConfig;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize table config with empty filter options for now
+    _initializeTableConfig([]);
+
+    // Fetch churches first, then donations
+    _fetchChurches().then((_) {
+      _fetchDonationsData();
+    });
+  }
+
+  // Initialize table config with the given church options
+  void _initializeTableConfig(List<String> churchOptions) {
+    _tableConfig = TableConfig(
+      columns: [
+        TableColumn(
+          key: 'Donation_ID',
+          header: 'Donation ID',
+          width: 80,
+          textAlign: TextAlign.center,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Member_ID',
+          header: 'Member ID',
+          width: 100,
+          textAlign: TextAlign.center,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Full_Name',
+          header: 'Full Name',
+          width: 150,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Date',
+          header: 'Date',
+          width: 120,
+          textAlign: TextAlign.center,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Church',
+          header: 'Church',
+          width: 150,
+          textAlign: TextAlign.center,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Amount',
+          header: 'Amount',
+          width: 120,
+          textAlign: TextAlign.right,
+          isSortable: true,
+        ),
+        TableColumn(
+          key: 'Currency',
+          header: 'Currency',
+          width: 100,
+          textAlign: TextAlign.center,
+          isSortable: true,
+        ),
       ],
-      'md': ['Donation_ID', 'Full_Name', 'Date', 'Amount', 'Currency'],
-      'sm': ['Donation_ID', 'Full_Name', 'Amount'],
-    },
-    filterOptions: [
-      FilterOption(
-        label: 'Church',
-        field: 'Church',
-        options: [
+      responsiveColumns: {
+        'lg': [
+          'Donation_ID',
+          'Member_ID',
+          'Full_Name',
+          'Date',
+          'Church',
+          'Amount',
+          'Currency'
+        ],
+        'md': ['Donation_ID', 'Full_Name', 'Date', 'Amount', 'Currency'],
+        'sm': ['Donation_ID', 'Full_Name', 'Amount'],
+      },
+      filterOptions: [
+        FilterOption(
+          label: 'Church',
+          field: 'Church',
+          options: churchOptions.isNotEmpty
+              ? churchOptions
+              : ['Loading churches...'],
+        ),
+        FilterOption(
+          label: 'Currency',
+          field: 'Currency',
+          options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY'],
+        ),
+      ],
+      headerColor: const Color.fromRGBO(28, 92, 168, 1),
+      rowColor: Colors.white,
+      selectedRowColor: const Color(0xFFE8F1FF),
+      hoverRowColor: const Color(0xFFF5F9FF),
+      rowHeight: 48,
+      headerHeight: 48,
+      showCheckboxColumn: false,
+      showVerticalScrollbar: true,
+      showHorizontalScrollbar: true,
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+    );
+  }
+
+  // Fetch churches from the API
+  Future<void> _fetchChurches() async {
+    setState(() {
+      _isLoadingChurches = true;
+      _churchError = null;
+    });
+
+    try {
+      final churches = await _apiService.fetchAllChurches();
+
+      if (churches != null && churches.isNotEmpty) {
+        setState(() {
+          _churches = churches;
+          _isLoadingChurches = false;
+
+          // Update the table config with the fetched churches
+          _initializeTableConfig(_churches);
+        });
+      } else {
+        // If API fails or returns empty data, use fallback data
+        print('API returned null or empty churches data, using fallback data');
+        setState(() {
+          _churches = [
+            'Test',
+            'Main Church',
+            'Seoul Center',
+            'New York Center',
+            'London Center',
+            'Singapore Center'
+          ];
+          _isLoadingChurches = false;
+
+          // Update the table config with the fallback churches
+          _initializeTableConfig(_churches);
+        });
+      }
+    } catch (e) {
+      print('Error fetching churches: $e, using fallback data');
+      setState(() {
+        _churchError = 'Error loading churches: $e';
+        _churches = [
           'Test',
           'Main Church',
           'Seoul Center',
           'New York Center',
           'London Center',
           'Singapore Center'
-        ],
-      ),
-      FilterOption(
-        label: 'Currency',
-        field: 'Currency',
-        options: ['USD', 'PHP', 'EUR', 'JPY', 'KRW', 'CNY'],
-      ),
-    ],
-    headerColor: const Color.fromRGBO(28, 92, 168, 1),
-    rowColor: Colors.white,
-    selectedRowColor: const Color(0xFFE8F1FF),
-    hoverRowColor: const Color(0xFFF5F9FF),
-    rowHeight: 48,
-    headerHeight: 48,
-    showCheckboxColumn: false,
-    showVerticalScrollbar: true,
-    showHorizontalScrollbar: true,
-    borderRadius: const BorderRadius.all(Radius.circular(8)),
-  );
+        ];
+        _isLoadingChurches = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchDonationsData();
+        // Update the table config with the fallback churches
+        _initializeTableConfig(_churches);
+      });
+    }
   }
 
   Future<void> _fetchDonationsData() async {
@@ -312,7 +381,7 @@ class _DonationsPageState extends State<DonationsPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Dontation_ID';
+      _sortColumn = 'Donation_ID'; // Fixed typo from 'Dontation_ID'
       _sortAscending = true;
       _applyFilters();
     });
@@ -613,8 +682,20 @@ class _DonationsPageState extends State<DonationsPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._tableConfig.filterOptions
-                              .map((filter) => _buildFilterDropdown(filter)),
+                          // Show loading indicator if churches are still loading
+                          _isLoadingChurches
+                              ? const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              : Column(
+                                  children: _tableConfig.filterOptions
+                                      .map((filter) =>
+                                          _buildFilterDropdown(filter))
+                                      .toList(),
+                                )
                         ],
                       ),
                     ),
