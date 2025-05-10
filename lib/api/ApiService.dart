@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ApiService {
   static const String baseUrl =
-      'http://192.168.1.11:8000/api'; // Replace with your API base URL
+      'http://192.168.0.21:8000/api'; // Replace with your API base URL
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
 

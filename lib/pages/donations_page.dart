@@ -17,8 +17,8 @@ class _DonationsPageState extends State<DonationsPage> {
   List<Map<String, dynamic>> _originalData = [];
   List<Map<String, dynamic>> _filteredData = [];
   String _searchQuery = '';
-  String _sortColumn = 'Date';
-  bool _sortAscending = false;
+  String _sortColumn = 'Donation_ID';
+  bool _sortAscending = true;
   Map<String, String?> _activeFilters = {};
   bool _isLoading = true;
   String? _error;
@@ -269,7 +269,13 @@ class _DonationsPageState extends State<DonationsPage> {
         if (bValue == null) return _sortAscending ? -1 : 1;
 
         int comparison;
-        if (aValue is num && bValue is num) {
+        // Special handling to ensure numeric sorting
+        if (_sortColumn == 'Donation_ID' || _sortColumn == 'Member_ID') {
+          // Parse the IDs as integers for proper numeric sorting
+          int aId = int.tryParse(aValue.toString()) ?? 0;
+          int bId = int.tryParse(bValue.toString()) ?? 0;
+          comparison = aId.compareTo(bId);
+        } else if (aValue is num && bValue is num) {
           comparison = aValue.compareTo(bValue);
         } else {
           comparison = aValue.toString().compareTo(bValue.toString());
@@ -306,8 +312,8 @@ class _DonationsPageState extends State<DonationsPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Date';
-      _sortAscending = false;
+      _sortColumn = 'Dontation_ID';
+      _sortAscending = true;
       _applyFilters();
     });
   }

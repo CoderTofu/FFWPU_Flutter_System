@@ -20,8 +20,8 @@ class _WorshipPageState extends State<WorshipPage> {
   bool _isLoading = true;
   String? _error;
   String _searchQuery = '';
-  String _sortColumn = 'Date';
-  bool _sortAscending = false;
+  String _sortColumn = 'ID';
+  bool _sortAscending = true;
   Map<String, String?> _activeFilters = {};
 
   @override
@@ -93,7 +93,7 @@ class _WorshipPageState extends State<WorshipPage> {
       TableColumn(
         key: 'Worship Type',
         header: 'Worship Type',
-        width: 150,
+        width: 120,
         textAlign: TextAlign.left,
         isSortable: true,
       ),
@@ -184,8 +184,8 @@ class _WorshipPageState extends State<WorshipPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Date';
-      _sortAscending = false;
+      _sortColumn = 'ID';
+      _sortAscending = true;
       _applyFilters();
     });
   }

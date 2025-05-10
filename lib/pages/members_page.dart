@@ -20,7 +20,7 @@ class _MembersPageState extends State<MembersPage> {
   bool _isLoading = true;
   String _error = '';
   String _searchQuery = '';
-  String _sortColumn = 'Full Name';
+  String _sortColumn = 'ID';
   bool _sortAscending = true;
   Map<String, String?> _activeFilters = {};
 
@@ -28,15 +28,15 @@ class _MembersPageState extends State<MembersPage> {
     columns: [
       TableColumn(
         key: 'ID',
-        header: 'Member ID',
-        width: 100,
+        header: 'ID',
+        width: 50,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
       TableColumn(
         key: 'Full Name',
         header: 'Full Name',
-        width: 200,
+        width: 150,
         isSortable: true,
       ),
       TableColumn(
@@ -70,20 +70,20 @@ class _MembersPageState extends State<MembersPage> {
       TableColumn(
         key: 'Address',
         header: 'Address',
-        width: 200,
+        width: 150,
         isSortable: false,
       ),
       TableColumn(
         key: 'Nation',
         header: 'Nation',
-        width: 150,
+        width: 120,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
       TableColumn(
         key: 'Region',
         header: 'Region',
-        width: 150,
+        width: 120,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
@@ -272,7 +272,7 @@ class _MembersPageState extends State<MembersPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Full Name';
+      _sortColumn = 'ID';
       _sortAscending = true;
       _applyFilters();
     });

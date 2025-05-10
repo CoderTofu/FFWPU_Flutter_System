@@ -18,8 +18,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
   List<Map<String, dynamic>> _originalData = [];
   List<Map<String, dynamic>> _filteredData = [];
   String _searchQuery = '';
-  String _sortColumn = 'Blessing_Date';
-  bool _sortAscending = false;
+  String _sortColumn = 'Blessing_ID';
+  bool _sortAscending = true;
   Map<String, String?> _activeFilters = {};
   bool _isLoading = true;
   String? _error;
@@ -28,7 +28,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
     columns: [
       TableColumn(
         key: 'Blessing_ID',
-        header: 'Blessing ID',
+        header: 'ID',
         width: 80,
         textAlign: TextAlign.center,
         isSortable: true,
@@ -50,7 +50,7 @@ class _BlessingsPageState extends State<BlessingsPage> {
       TableColumn(
         key: 'Chaenbo',
         header: 'Chaenbo',
-        width: 150,
+        width: 120,
         textAlign: TextAlign.center,
         isSortable: true,
       ),
@@ -235,7 +235,13 @@ class _BlessingsPageState extends State<BlessingsPage> {
         if (bValue == null) return _sortAscending ? -1 : 1;
 
         int comparison;
-        if (aValue is num && bValue is num) {
+        // Special handling for Blessing_ID to ensure numeric sorting
+        if (_sortColumn == 'Blessing_ID') {
+          // Parse the IDs as integers for proper numeric sorting
+          int aId = int.tryParse(aValue.toString()) ?? 0;
+          int bId = int.tryParse(bValue.toString()) ?? 0;
+          comparison = aId.compareTo(bId);
+        } else if (aValue is num && bValue is num) {
           comparison = aValue.compareTo(bValue);
         } else {
           comparison = aValue.toString().compareTo(bValue.toString());
@@ -272,8 +278,8 @@ class _BlessingsPageState extends State<BlessingsPage> {
     setState(() {
       _activeFilters.clear();
       _searchQuery = '';
-      _sortColumn = 'Blessing_Date';
-      _sortAscending = false;
+      _sortColumn = 'Blessing_ID';
+      _sortAscending = true;
       _applyFilters();
     });
   }
